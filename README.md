@@ -1,7 +1,12 @@
 # IGNITE — React Redesign (Demo)
 
+**Live demo: https://dhirengithub.github.io/ignite-magazine/**
+
 A working redesign concept for [unmignite.com](https://www.unmignite.com/), built on React so the
 design language and publishing workflow are fully under your control — no Wix.
+
+Every push to `main` redeploys the live demo automatically via GitHub Actions
+(`.github/workflows/deploy.yml`).
 
 Design direction follows Fasya's creative brief: black & white editorial base, loud League
 Spartan typography, Times serif accents, and the Ignite palette
