@@ -2,6 +2,9 @@
 
 **Live demo: https://dhirengithub.github.io/ignite-magazine/**
 
+**Inheriting this site?** Start with [HANDOVER.md](HANDOVER.md) — the master document on
+how everything works, where it lives, and how to change it.
+
 A working redesign concept for [unmignite.com](https://www.unmignite.com/), built on React so the
 design language and publishing workflow are fully under your control — no Wix.
 
