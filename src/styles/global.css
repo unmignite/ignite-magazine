@@ -455,6 +455,20 @@ button { font-family: inherit; cursor: pointer; }
 }
 .card-meta .sep { color: var(--accent, var(--pink)); padding: 0 0.4em; }
 
+.card .read-now {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding-bottom: 0.15em;
+  border-bottom: 3px solid var(--accent, var(--pink));
+  transition: background 0.15s;
+}
+.card:hover .read-now { background: var(--yellow); }
+
 /* horizontal row card (stack) */
 .card-row {
   display: grid;
@@ -616,6 +630,46 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
 }
 .article-byline .accent { color: var(--accent, var(--pink)); }
+
+.share-bar {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+.share-bar .share-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin-right: 0.3rem;
+}
+.share-chip {
+  border: 2px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.55em 0.95em 0.45em;
+  transition: background 0.15s, color 0.15s;
+}
+.share-chip:hover { background: var(--yellow); }
+.share-chip.primary { background: var(--black); color: var(--white); }
+.share-chip.primary:hover { background: var(--pink); border-color: var(--pink); }
+.share-note {
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--grey);
+  margin-top: 0.2rem;
+}
 
 .article-body {
   max-width: 720px;

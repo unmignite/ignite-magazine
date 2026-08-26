@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { can } from '../data/users'
 import ArticleCard, { sectionOf } from '../components/ArticleCard'
+import ShareBar from '../components/ShareBar'
 import NotFound from './NotFound'
 
 const fmtDate = (d) =>
@@ -49,6 +50,7 @@ export default function Article() {
             </>
           )}
         </div>
+        <ShareBar title={article.title} />
       </header>
 
       <div className="article-body" dangerouslySetInnerHTML={{ __html: article.body }} />

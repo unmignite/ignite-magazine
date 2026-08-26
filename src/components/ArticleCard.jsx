@@ -32,6 +32,7 @@ export default function ArticleCard({ article, variant = 'grid' }) {
           <span className="sep">✦</span>
           {fmtDate(article.date)}
         </p>
+        {variant !== 'row' && <span className="read-now">Read now →</span>}
       </div>
     </Link>
   )
