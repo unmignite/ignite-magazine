@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { SECTIONS } from '../data/seedArticles'
+import { SECTIONS } from '../data/sections'
 import { useStore } from '../context/StoreContext'
 
 // Sections shown in the top bar (the rest live in the footer + mobile menu)

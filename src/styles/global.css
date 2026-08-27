@@ -923,25 +923,40 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 1.2rem;
 }
 
-.demo-creds {
+.login-foot {
   margin-top: 2rem;
-  border: 2px dashed var(--grey);
-  padding: 1.2rem;
-  font-size: 0.8rem;
-  line-height: 1.7;
+  border-top: 2px solid var(--grey-light);
+  padding-top: 1rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--grey);
+  line-height: 1.6;
 }
-.demo-creds b { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.08em; }
-.demo-creds code {
+
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Shown when the Supabase environment variables are missing. */
+.setup-notice {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  text-align: center;
+  padding: var(--pad);
+  max-width: 680px;
+  margin: 0 auto;
+}
+.setup-notice h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); color: var(--pink); }
+.setup-notice p { line-height: 1.8; }
+.setup-notice code {
   background: var(--grey-light);
-  padding: 0.15em 0.5em;
-  font-size: 0.78rem;
+  padding: 0.15em 0.45em;
+  font-size: 0.85em;
 }
-.demo-creds button {
-  background: none; border: none;
-  color: var(--pink); font-weight: 700;
-  text-decoration: underline;
-  font-size: 0.78rem;
-}
+.setup-notice .hint { color: var(--grey); font-style: italic; font-size: 0.9rem; }
 
 /* ============================================================
    STUDIO (dashboard)

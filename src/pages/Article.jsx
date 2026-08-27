@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
-import { can } from '../data/users'
+import { can } from '../lib/roles'
 import ArticleCard, { sectionOf } from '../components/ArticleCard'
 import ShareBar from '../components/ShareBar'
 import NotFound from './NotFound'

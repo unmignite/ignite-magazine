@@ -8,18 +8,19 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    const res = login(email, password)
-    if (!res.ok) return setError(res.error)
-    navigate('/studio')
-  }
-
-  const fill = (mail) => {
-    setEmail(mail)
-    setPassword('ignite2026')
+    setBusy(true)
     setError('')
+    const res = await login(email, password)
+    setBusy(false)
+    if (!res.ok) {
+      setError(res.error || 'Could not sign in.')
+      return
+    }
+    navigate('/studio')
   }
 
   return (
@@ -30,12 +31,16 @@ export default function Login() {
         </h1>
         <p>
           Everything about Ignite is edited from inside Ignite — write, style and publish
-          without ever leaving the site. No Wix, no fuss.
+          without ever leaving the site.
         </p>
       </div>
       <div className="login-right">
         <h2>Editor login</h2>
-        {user && <p className="field hint" style={{ marginBottom: '1rem' }}>You are already logged in as {user.name}.</p>}
+        {user && (
+          <p className="field hint" style={{ marginBottom: '1rem' }}>
+            You are already logged in as {user.name}.
+          </p>
+        )}
         {error && <div className="login-error">{error}</div>}
         <form onSubmit={submit}>
           <div className="field">
@@ -60,20 +65,15 @@ export default function Login() {
               required
             />
           </div>
-          <button className="btn-primary" type="submit">Log in →</button>
+          <button className="btn-primary" type="submit" disabled={busy}>
+            {busy ? 'Signing in…' : 'Log in →'}
+          </button>
         </form>
 
-        <div className="demo-creds">
-          <b>Demo accounts</b>
-          <br />
-          Editor-in-Chief (full access):{' '}
-          <button type="button" onClick={() => fill('chief@unmignite.com')}>chief@unmignite.com</button>
-          <br />
-          Section Editor (write &amp; edit, no delete/feature):{' '}
-          <button type="button" onClick={() => fill('editor@unmignite.com')}>editor@unmignite.com</button>
-          <br />
-          Password for both: <code>ignite2026</code>
-        </div>
+        <p className="login-foot">
+          Accounts are created by the Editor-in-Chief in the Supabase dashboard.
+          Lost your password? Ask them to reset it for you.
+        </p>
       </div>
     </div>
   )

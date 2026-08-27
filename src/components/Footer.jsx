@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { SECTIONS } from '../data/seedArticles'
+import { SECTIONS } from '../data/sections'
 
 export default function Footer() {
   return (

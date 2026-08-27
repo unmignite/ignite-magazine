@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
-import { SECTIONS } from '../data/seedArticles'
+import { SECTIONS } from '../data/sections'
 import ArticleCard from '../components/ArticleCard'
 import NotFound from './NotFound'
 

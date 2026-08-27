@@ -11,8 +11,9 @@ import FontFamily from '@tiptap/extension-font-family'
 import TextAlign from '@tiptap/extension-text-align'
 import Placeholder from '@tiptap/extension-placeholder'
 import { useStore } from '../context/StoreContext'
-import { can } from '../data/users'
-import { SECTIONS } from '../data/seedArticles'
+import { can } from '../lib/roles'
+import { SECTIONS } from '../data/sections'
+import { uploadImage } from '../lib/supabase'
 import NotFound from './NotFound'
 
 const PALETTE = [
@@ -35,13 +36,6 @@ const FONTS = [
 const slugify = (t) =>
   t.toLowerCase().replace(/[’'"“”.,!?:;()]/g, '').replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
-const readFileAsDataURL = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = reject
-    reader.readAsDataURL(file)
-  })
 
 function Toolbar({ editor }) {
   const fileInputRef = useRef(null)
@@ -63,10 +57,14 @@ function Toolbar({ editor }) {
   const addImageByUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const dataUrl = await readFileAsDataURL(file)
-    editor.chain().focus().setImage({ src: dataUrl }).run()
     e.target.value = ''
-    addCredit()
+    try {
+      const url = await uploadImage(file)
+      editor.chain().focus().setImage({ src: url }).run()
+      addCredit()
+    } catch (err) {
+      alert(err.message)
+    }
   }
 
   const addCredit = () => {
@@ -190,6 +188,8 @@ function EditorForm({ existing }) {
   const [featured, setFeatured] = useState(existing?.featured || false)
   const [status, setStatus] = useState(existing?.status || 'draft')
   const [savedFlash, setSavedFlash] = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const [busy, setBusy] = useState(false)
 
   const editor = useEditor({
     extensions: [
@@ -209,11 +209,18 @@ function EditorForm({ existing }) {
   const onCoverUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setCover(await readFileAsDataURL(file))
     e.target.value = ''
+    setBusy(true)
+    try {
+      setCover(await uploadImage(file))
+    } catch (err) {
+      setSaveError(err.message)
+    } finally {
+      setBusy(false)
+    }
   }
 
-  const save = () => {
+  const save = async () => {
     if (!title.trim()) return alert('Give the article a title first.')
     if (!editor) return
 
@@ -226,7 +233,7 @@ function EditorForm({ existing }) {
     }
 
     const article = {
-      id: existing?.id || `a-${Date.now()}`,
+      id: existing?.id || null, // null → the database generates the id
       slug,
       title: title.trim(),
       dek: dek.trim(),
@@ -234,7 +241,7 @@ function EditorForm({ existing }) {
       author: author.trim() || user.name,
       date,
       readTime: Number(readTime) || 4,
-      cover: cover.trim() || 'https://static.wixstatic.com/media/637e18_20d9c7ed8b1844e08459a28bbd7f5909~mv2.jpg/v1/fill/w_1000,h_667,al_c,q_85,usm_0.66_1.00_0.01/637e18_20d9c7ed8b1844e08459a28bbd7f5909~mv2.jpg',
+      cover: cover.trim(),
       coverCredit: coverCredit.trim(),
       tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
       featured: can(user, 'feature') ? featured : existing?.featured || false,
@@ -243,16 +250,25 @@ function EditorForm({ existing }) {
       body: editor.getHTML(),
     }
 
-    saveArticle(article)
+    setBusy(true)
+    setSaveError('')
+    const res = await saveArticle(article)
+    setBusy(false)
+
+    if (!res.ok) {
+      setSaveError(res.error)
+      return
+    }
     setSavedFlash(true)
     setTimeout(() => setSavedFlash(false), 2500)
-    if (isNew) navigate(`/studio/edit/${article.id}`, { replace: true })
+    if (isNew) navigate(`/studio/edit/${res.article.id}`, { replace: true })
   }
 
-  const remove = () => {
+  const remove = async () => {
     if (!existing) return
     if (window.confirm(`Delete “${existing.title}”? This cannot be undone.`)) {
-      deleteArticle(existing.id)
+      const res = await deleteArticle(existing.id)
+      if (!res.ok) return setSaveError(res.error)
       navigate('/studio')
     }
   }
@@ -266,10 +282,12 @@ function EditorForm({ existing }) {
         {existing && (
           <Link className="btn-ghost" to={`/article/${existing.slug}`}>View live</Link>
         )}
-        <button className="btn-primary" onClick={save}>
-          {status === 'published' ? 'Save & publish' : 'Save draft'}
+        <button className="btn-primary" onClick={save} disabled={busy}>
+          {busy ? 'Saving…' : status === 'published' ? 'Save & publish' : 'Save draft'}
         </button>
       </div>
+
+      {saveError && <div className="login-error">{saveError}</div>}
 
       <div className="editor-grid">
         <div>
@@ -358,8 +376,8 @@ function EditorForm({ existing }) {
           </label>
 
           <div className="meta-actions">
-            <button className="btn-primary" onClick={save}>
-              {status === 'published' ? 'Save & publish' : 'Save draft'}
+            <button className="btn-primary" onClick={save} disabled={busy}>
+              {busy ? 'Saving…' : status === 'published' ? 'Save & publish' : 'Save draft'}
             </button>
             {existing && can(user, 'delete', existing) && (
               <button className="btn-danger" onClick={remove}>Delete article</button>

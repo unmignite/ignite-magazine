@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
-import { can } from '../data/users'
-import { SECTIONS } from '../data/seedArticles'
+import { can } from '../lib/roles'
+import { SECTIONS } from '../data/sections'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 
 export default function Studio() {
-  const { articles, user, deleteArticle, toggleFeatured, resetToSeed } = useStore()
+  const { articles, user, loading, error, deleteArticle, toggleFeatured } = useStore()
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('all')
+  const [notice, setNotice] = useState('')
 
   const shown = articles
     .filter((a) => (filter === 'all' ? true : a.status === filter))
@@ -20,10 +21,15 @@ export default function Studio() {
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1))
 
-  const handleDelete = (a) => {
-    if (window.confirm(`Delete “${a.title}”? This cannot be undone.`)) {
-      deleteArticle(a.id)
-    }
+  const handleDelete = async (a) => {
+    if (!window.confirm(`Delete “${a.title}”? This cannot be undone.`)) return
+    const res = await deleteArticle(a.id)
+    if (!res.ok) setNotice(res.error)
+  }
+
+  const handleFeature = async (a) => {
+    const res = await toggleFeatured(a.id)
+    if (!res.ok) setNotice(res.error)
   }
 
   return (
@@ -51,6 +57,12 @@ export default function Studio() {
           </Link>
         </div>
       </div>
+
+      {(notice || error) && (
+        <div className="login-error" style={{ marginBottom: '1.2rem' }}>
+          {notice || error}
+        </div>
+      )}
 
       <table className="studio-table">
         <thead>
@@ -94,7 +106,7 @@ export default function Studio() {
                     className={`star-btn ${a.featured ? 'on' : ''}`}
                     disabled={!can(user, 'feature', a)}
                     title={can(user, 'feature', a) ? 'Toggle landing-page carousel' : 'Only the Editor-in-Chief can feature articles'}
-                    onClick={() => toggleFeatured(a.id)}
+                    onClick={() => handleFeature(a)}
                   >
                     ★
                   </button>
@@ -115,17 +127,10 @@ export default function Studio() {
         </tbody>
       </table>
 
-      <p className="studio-note">
-        Changes are stored in your browser (localStorage) for this demo — a real deployment
-        would plug the same interface into a database.{' '}
-        <button
-          onClick={() => {
-            if (window.confirm('Reset all articles back to the original seed content?')) resetToSeed()
-          }}
-        >
-          Reset demo content
-        </button>
-      </p>
+      {loading && <p className="studio-note">Loading articles…</p>}
+      {!loading && shown.length === 0 && (
+        <p className="studio-note">No articles match this filter.</p>
+      )}
     </div>
   )
 }

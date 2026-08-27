@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { SECTIONS } from '../data/seedArticles'
+import { SECTIONS } from '../data/sections'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })

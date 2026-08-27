@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
-import { ROLE_LABELS } from '../data/users'
+import { ROLE_LABELS } from '../lib/roles'
 
 export default function AdminBar() {
   const { user, logout } = useStore()
