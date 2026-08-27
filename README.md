@@ -1,6 +1,6 @@
 # IGNITE — React Redesign (Demo)
 
-**Live demo: https://dhirengithub.github.io/ignite-magazine/**
+**Live demo: https://unmignite.github.io/ignite-magazine/**
 
 **Inheriting this site?** Start with [HANDOVER.md](HANDOVER.md) — the master document on
 how everything works, where it lives, and how to change it.

@@ -10,8 +10,8 @@
 
 | Quick facts | |
 | --- | --- |
-| Live demo | https://dhirengithub.github.io/ignite-magazine/ |
-| Repository | https://github.com/DhirenGitHub/ignite-magazine *(to be transferred — see below)* |
+| Live demo | https://unmignite.github.io/ignite-magazine/ |
+| Repository | https://github.com/unmignite/ignite-magazine |
 | Stack | React 18 + Vite, React Router, TipTap editor, plain CSS |
 | Hosting | GitHub Pages, auto-deployed by GitHub Actions on every push to `main` |
 | Backend | None yet — content persists in each browser's localStorage (POC) |
@@ -24,30 +24,32 @@
 
 ### 1.1 GitHub account
 
-The repository currently lives on a personal account and **must be moved to the official
-IGNITE GitHub account** so it survives committee handovers.
+The site lives on the **official IGNITE GitHub account** (`unmignite`), not a personal one,
+so it survives committee handovers. Web managers are added as **collaborators** with their
+own personal accounts — they can push code (which deploys the site) without ever needing
+the IGNITE account password.
 
-> **⬜ TBD — fill in when the account exists:**
->
 > | | |
 > | --- | --- |
-> | IGNITE GitHub handle | ⬜ |
-> | Account email | ⬜ (use the IGNITE email, not a personal one) |
-> | Password / 2FA recovery | ⬜ where is it stored? (committee password manager?) |
-> | Live URL after transfer | `https://<ignite-handle>.github.io/ignite-magazine/` |
+> | IGNITE GitHub handle | `unmignite` |
+> | Repository | https://github.com/unmignite/ignite-magazine |
+> | Live URL | https://unmignite.github.io/ignite-magazine/ |
+> | Account email | ⬜ TBD — the official IGNITE address |
+> | Password / 2FA recovery | ⬜ TBD — where is it stored? (committee password manager?) |
 
-**How to transfer the repo** (one-time, ~10 minutes):
+**The repo must stay public.** GitHub Pages only publishes from private repositories on
+paid plans, and the published website is public either way — a private repo would hide the
+source without hiding the site. See section 9 for what this means for secrets.
 
-1. On the repo: *Settings → General → Danger Zone → Transfer ownership* → enter the IGNITE account.
-2. On the IGNITE account after transfer: *Settings → Pages* → set **Source: GitHub Actions**.
-3. Go to the *Actions* tab → run the **Deploy to GitHub Pages** workflow manually once.
-4. The Pages URL changes to the new account's handle. The `/ignite-magazine/` part stays
-   the same (it follows the **repo name**, not the account), so nothing in the code needs
-   to change as long as the repo keeps its name. If you ever rename the repo, update
-   `DEPLOY_BASE` in `.github/workflows/deploy.yml` to match.
-5. Everyone with a local clone updates their remote:
-   `git remote set-url origin https://github.com/<ignite-handle>/ignite-magazine.git`
-6. Update the live-demo links in `README.md` and this document.
+**Adding the next web manager:** from the IGNITE account, *Settings → Collaborators →
+Add people* → their personal GitHub username. Remove departing members the same way.
+
+**Owner-only actions.** Collaborators can push, but a few things require logging in as
+`unmignite`: enabling Pages, adding/removing collaborators, changing repo settings, and
+setting a custom domain.
+
+**If the repo is ever renamed**, the live URL changes with it, and `DEPLOY_BASE` in
+`.github/workflows/deploy.yml` must be updated to match the new `/repo-name/`.
 
 ### 1.2 Domain (when we go live for real)
 
@@ -59,7 +61,7 @@ can be lost. Renewal is roughly RM60–90/year and is the only unavoidable runni
 > **⬜ TBD:** registrar account details, renewal date, who pays.
 
 Custom domain setup on GitHub Pages (when ready): repo *Settings → Pages → Custom domain*,
-plus a CNAME record at the registrar pointing `www` to `<ignite-handle>.github.io`.
+plus a CNAME record at the registrar pointing `www` to `unmignite.github.io`.
 Note: with a custom domain the site is served from the domain root, so `DEPLOY_BASE`
 in the workflow must change from `/ignite-magazine/` to `/`.
 
@@ -82,7 +84,7 @@ the storage layer (section 7).
 You need [Node.js](https://nodejs.org) 18 or newer (LTS is fine). Then:
 
 ```bash
-git clone https://github.com/<ignite-handle>/ignite-magazine.git
+git clone https://github.com/unmignite/ignite-magazine.git
 cd ignite-magazine
 npm install        # once, ~1 minute
 npm run dev        # dev server at http://localhost:5173
