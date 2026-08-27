@@ -200,7 +200,25 @@ create policy profiles_read_staff on public.profiles
 
 
 -- ----------------------------------------------------------------------------
--- 7. Image storage
+-- 7. Data API grants
+-- ----------------------------------------------------------------------------
+-- The project is configured with "Automatically expose new tables" OFF, so a
+-- table is only reachable through the API once it is granted here. These are
+-- deliberately narrow. Note that grants and RLS are two separate gates: a grant
+-- says "this role may attempt this operation", RLS then decides which rows.
+-- Both must allow, so an over-broad grant is still contained by the policies.
+
+grant usage on schema public to anon, authenticated;
+
+grant select                         on public.articles to anon, authenticated;
+grant insert, update, delete         on public.articles to authenticated;
+grant select                         on public.profiles to authenticated;
+
+grant execute on function public.user_role() to anon, authenticated;
+
+
+-- ----------------------------------------------------------------------------
+-- 8. Image storage
 -- ----------------------------------------------------------------------------
 -- Public bucket: article images must be readable by every visitor. Uploading
 -- and deleting, however, is staff-only.
