@@ -3,3 +3,10 @@ dist/
 .DS_Store
 *.local
 .claude/settings.local.json
+
+# Never commit environment files — they are where API keys end up.
+# Note: Vite inlines any VITE_* variable into the public browser bundle,
+# so secret keys (e.g. Supabase service_role) must never use that prefix.
+.env
+.env.*
+!.env.example
