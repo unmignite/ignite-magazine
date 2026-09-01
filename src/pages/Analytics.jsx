@@ -96,12 +96,6 @@ export default function Analytics() {
         </div>
       )}
 
-      <p className="studio-note">
-        Views are counted once per reader per browser session, and editors' own visits
-        aren't counted. Nothing personal is stored — no IP addresses, no cookies, no
-        identifiers — only that an article was read, which is why the site needs no
-        cookie banner.
-      </p>
     </div>
   )
 }
