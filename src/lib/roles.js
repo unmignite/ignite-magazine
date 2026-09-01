@@ -11,13 +11,16 @@
 export const ROLE_LABELS = {
   admin: 'Web Manager',
   editor: 'Section Editor',
+  designer: 'Designer',
 }
 
 const EDITOR_ACTIONS = ['create', 'edit', 'publish']
+const DESIGNER_ACTIONS = ['design']
 
 export const can = (user, action) => {
   if (!user) return false
-  if (user.role === 'admin') return true // includes 'delete' and 'feature'
+  if (user.role === 'admin') return true // everything, including delete/feature/design
   if (user.role === 'editor') return EDITOR_ACTIONS.includes(action)
+  if (user.role === 'designer') return DESIGNER_ACTIONS.includes(action)
   return false
 }

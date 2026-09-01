@@ -1270,6 +1270,111 @@ button { font-family: inherit; cursor: pointer; }
 .upload-row input[type="file"] { display: none; }
 
 /* ============================================================
+   DESIGN PANEL
+   ============================================================ */
+
+.design-intro {
+  max-width: 640px;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--grey);
+  line-height: 1.6;
+}
+.design-ok {
+  background: var(--green);
+  color: var(--black);
+  padding: 0.8em 1em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+}
+.design-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+.design-block {
+  border: 2px solid var(--black);
+  padding: 1.5rem;
+}
+.design-block h2 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  border-bottom: 3px solid var(--black);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.color-row {
+  display: grid;
+  grid-template-columns: 44px 1fr 92px;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--grey-light);
+}
+.color-row:last-child { border-bottom: none; }
+.color-row input[type="color"] {
+  width: 44px; height: 44px;
+  padding: 0;
+  border: 2px solid var(--black);
+  background: none;
+  cursor: pointer;
+}
+.color-meta { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.color-meta strong {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+}
+.color-meta span { font-size: 0.7rem; color: var(--grey); line-height: 1.35; }
+.hex-input {
+  border: 2px solid var(--black);
+  padding: 0.45em 0.5em;
+  font-family: Consolas, monospace;
+  font-size: 0.75rem;
+  width: 100%;
+}
+
+.font-sample {
+  margin-top: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed var(--grey);
+  font-size: 1.05rem;
+}
+
+.swatch-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.4rem; }
+
+.preview-card { border: 2px solid var(--black); padding: 1.2rem; }
+.preview-card h3 {
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.05;
+  font-size: 1.3rem;
+  margin: 0.7rem 0 0.5rem;
+}
+.preview-card p { font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.7rem; }
+.preview-card blockquote {
+  border-left: 5px solid var(--pink);
+  padding: 0.3em 0 0.3em 0.9em;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  margin-bottom: 0.9rem;
+}
+.design-page input[type="range"] { width: 100%; accent-color: var(--pink); }
+
+@media (max-width: 1080px) {
+  .design-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
    NOT FOUND
    ============================================================ */
 

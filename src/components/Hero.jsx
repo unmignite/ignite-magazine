@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sectionOf } from './ArticleCard'
+import { useTheme } from '../context/ThemeContext'
 
-// keep in sync with the progress-bar fill animation via --slide-ms below
-const SLIDE_MS = 6000
+// Slide duration is themeable (Studio → Design); the progress bars stay in
+// sync because the same value drives their CSS fill animation.
 
 // A24-style landing hero: full-screen article covers that auto-advance on a timer.
 export default function Hero({ articles }) {
   const [index, setIndex] = useState(0)
+  const { theme } = useTheme()
+  const SLIDE_MS = theme.hero.intervalMs
   const n = articles.length
 
   // `index` in the deps restarts the timer after a manual jump,
@@ -16,7 +19,7 @@ export default function Hero({ articles }) {
     if (n < 2) return
     const t = setInterval(() => setIndex((i) => (i + 1) % n), SLIDE_MS)
     return () => clearInterval(t)
-  }, [n, index])
+  }, [n, index, SLIDE_MS])
 
   if (!n) return null
   const active = articles[index]

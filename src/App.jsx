@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { StoreProvider, useStore } from './context/StoreContext'
+import { ThemeProvider } from './context/ThemeContext'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import AdminBar from './components/AdminBar'
@@ -10,6 +11,7 @@ import Article from './pages/Article'
 import Login from './pages/Login'
 import Studio from './pages/Studio'
 import Editor from './pages/Editor'
+import Design from './pages/Design'
 import NotFound from './pages/NotFound'
 
 function ScrollToTop() {
@@ -40,6 +42,7 @@ function Shell() {
           <Route path="/login" element={<Login />} />
           <Route path="/studio" element={<Protected><Studio /></Protected>} />
           <Route path="/studio/new" element={<Protected><Editor /></Protected>} />
+          <Route path="/studio/design" element={<Protected><Design /></Protected>} />
           <Route path="/studio/edit/:id" element={<Protected><Editor /></Protected>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -52,8 +55,10 @@ function Shell() {
 export default function App() {
   return (
     <StoreProvider>
-      <ScrollToTop />
-      <Shell />
+      <ThemeProvider>
+        <ScrollToTop />
+        <Shell />
+      </ThemeProvider>
     </StoreProvider>
   )
 }
