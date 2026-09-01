@@ -365,7 +365,7 @@ function EditorForm({ existing }) {
             </select>
           </div>
 
-          <label className="check-row" title={can(user, 'feature') ? '' : 'Only the Editor-in-Chief can feature articles'}>
+          <label className="check-row" title={can(user, 'feature') ? '' : 'Only the Web Manager can feature articles'}>
             <input
               type="checkbox"
               checked={featured}

@@ -71,7 +71,7 @@ export default function Login() {
         </form>
 
         <p className="login-foot">
-          Accounts are created by the Editor-in-Chief in the Supabase dashboard.
+          Accounts are created by the Web Manager in the Supabase dashboard.
           Lost your password? Ask them to reset it for you.
         </p>
       </div>

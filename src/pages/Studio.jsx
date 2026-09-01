@@ -105,7 +105,7 @@ export default function Studio() {
                   <button
                     className={`star-btn ${a.featured ? 'on' : ''}`}
                     disabled={!can(user, 'feature', a)}
-                    title={can(user, 'feature', a) ? 'Toggle landing-page carousel' : 'Only the Editor-in-Chief can feature articles'}
+                    title={can(user, 'feature', a) ? 'Toggle landing-page carousel' : 'Only the Web Manager can feature articles'}
                     onClick={() => handleFeature(a)}
                   >
                     ★

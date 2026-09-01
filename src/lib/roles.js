@@ -5,8 +5,11 @@
 // supabase/schema.sql), so hiding a button and blocking the action are separate
 // layers, and the database one is the one that actually counts.
 
+// Shown in the admin bar. `admin` is the full-access role held by the Web
+// Manager; rename these freely, they are display text only — the permission
+// rules below (and the database policies) key off 'admin' / 'editor'.
 export const ROLE_LABELS = {
-  admin: 'Editor-in-Chief',
+  admin: 'Web Manager',
   editor: 'Section Editor',
 }
 
