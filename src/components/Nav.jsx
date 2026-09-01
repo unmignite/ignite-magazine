@@ -3,13 +3,15 @@ import { Link, NavLink } from 'react-router-dom'
 import { SECTIONS } from '../data/sections'
 import { useStore } from '../context/StoreContext'
 
-// Sections shown in the top bar (the rest live in the footer + mobile menu)
-const NAV_SECTIONS = ['music', 'film-tv', 'beauty-style', 'opinions', 'food-travel', 'news']
+// Every section appears in the top bar — nothing should be reachable only from
+// the footer. If the list ever grows too wide for one line, drop sections into
+// NAV_HIDDEN rather than silently truncating.
+const NAV_HIDDEN = []
 
 export default function Nav() {
   const [open, setOpen] = useState(false)
   const { user } = useStore()
-  const links = SECTIONS.filter((s) => NAV_SECTIONS.includes(s.slug))
+  const links = SECTIONS.filter((s) => !NAV_HIDDEN.includes(s.slug))
 
   return (
     <>
@@ -19,6 +21,7 @@ export default function Nav() {
             IGNITE<em>.</em>
           </Link>
           <nav className="nav-links">
+            <NavLink to="/articles" className="nav-all">All</NavLink>
             {links.map((s) => (
               <NavLink key={s.slug} to={`/section/${s.slug}`} style={{ '--accent': s.color }}>
                 {s.name}
@@ -41,6 +44,7 @@ export default function Nav() {
       </header>
       {open && (
         <div className="mobile-menu" onClick={() => setOpen(false)}>
+          <Link to="/articles" style={{ '--accent': 'var(--yellow)' }}>All articles</Link>
           {SECTIONS.map((s) => (
             <Link key={s.slug} to={`/section/${s.slug}`} style={{ '--accent': s.color }}>
               {s.name}

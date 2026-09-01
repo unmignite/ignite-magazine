@@ -25,6 +25,7 @@ export default function Footer() {
             {SECTIONS.slice(5).map((s) => (
               <li key={s.slug}><Link to={`/section/${s.slug}`}>{s.name}</Link></li>
             ))}
+            <li><Link to="/articles">All articles</Link></li>
             <li><Link to="/login">Editor login</Link></li>
           </ul>
         </div>

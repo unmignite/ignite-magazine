@@ -150,18 +150,20 @@ button { font-family: inherit; cursor: pointer; }
 
 .nav-links {
   display: flex;
-  gap: 1.4rem;
+  gap: clamp(0.7rem, 1.4vw, 1.4rem);
   margin-left: auto;
 }
 .nav-links a {
-  font-size: 0.72rem;
+  font-size: clamp(0.62rem, 0.85vw, 0.72rem);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: clamp(0.08em, 0.14vw, 0.16em);
   padding: 0.4em 0;
   position: relative;
   white-space: nowrap;
 }
+/* "All" leads the nav, so give it a little more presence */
+.nav-links .nav-all { --accent: var(--yellow); }
 .nav-links a::after {
   content: '';
   position: absolute;

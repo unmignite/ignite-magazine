@@ -16,7 +16,6 @@ export const SECTIONS = [
   { slug: 'news', name: 'News', color: 'var(--red)', blurb: 'What is happening on campus and why it matters.' },
   { slug: 'sports', name: 'Sports', color: 'var(--green)', blurb: 'Sweat, rivalries and glory — varsity and beyond.' },
   { slug: 'notts-uncovered', name: 'Notts Uncovered', color: 'var(--orange)', blurb: 'The hidden corners of Nottingham, uncovered one story at a time.' },
-  { slug: 'the-review', name: 'The Review', color: 'var(--grey)', blurb: 'Our flagship long-reads and annual print edition.' },
 ]
 
 export const sectionBySlug = (slug) => SECTIONS.find((s) => s.slug === slug)
