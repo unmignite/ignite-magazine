@@ -1390,6 +1390,159 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* ============================================================
+   HOMEPAGE BLOCKS — carousel + image band
+   ============================================================ */
+
+.carousel-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
+.carousel-head .block-head { flex: 1; margin-bottom: 0; }
+.carousel-arrows { display: flex; gap: 0.4rem; padding-bottom: 0.8rem; }
+.carousel-arrows button {
+  width: 40px; height: 40px;
+  border: 2px solid var(--black);
+  background: var(--white);
+  font-size: 1rem;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+.carousel-arrows button:hover { background: var(--yellow); }
+
+.carousel-track {
+  display: flex;
+  gap: 1.6rem;
+  margin-top: 2.2rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  padding-bottom: 1rem;
+}
+.carousel-item {
+  flex: 0 0 clamp(230px, 26vw, 330px);
+  scroll-snap-align: start;
+}
+
+.image-block {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  background: var(--black);
+}
+.image-block img { width: 100%; height: 100%; object-fit: cover; }
+.image-block figcaption {
+  position: absolute;
+  bottom: 0.7rem;
+  right: var(--pad);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+  background: rgba(0,0,0,0.5);
+  padding: 0.35em 0.8em;
+}
+
+/* ============================================================
+   LAYOUT EDITOR
+   ============================================================ */
+
+.block-list { list-style: none; padding: 0; margin: 0 0 2.5rem; }
+.block-item {
+  border: 2px solid var(--black);
+  margin-bottom: 0.8rem;
+  background: var(--white);
+}
+.block-item.open { border-color: var(--pink); }
+
+.block-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+}
+.block-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--grey-light);
+  -webkit-text-stroke: 1px var(--grey);
+}
+.block-id { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.block-id strong {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+}
+.block-id span {
+  font-size: 0.75rem;
+  color: var(--grey);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.block-actions { display: flex; gap: 0.4rem; }
+.block-actions button {
+  min-width: 36px;
+  height: 34px;
+  border: 2px solid var(--black);
+  background: var(--white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 0.6em;
+}
+.block-actions button:hover:not(:disabled) { background: var(--yellow); }
+.block-actions button:disabled { opacity: 0.3; cursor: not-allowed; }
+.block-actions .del { border-color: var(--red); color: var(--red); }
+.block-actions .del:hover { background: var(--red); color: var(--white); }
+
+.block-form {
+  border-top: 2px dashed var(--grey-light);
+  padding: 1.2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.2rem;
+}
+.block-form .field { margin-bottom: 0; }
+
+.add-block h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  border-bottom: 3px solid var(--black);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.add-block-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+.add-block-grid button {
+  text-align: left;
+  border: 2px dashed var(--grey);
+  background: var(--white);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+.add-block-grid button:hover { border-color: var(--pink); border-style: solid; background: #fffdf2; }
+.add-block-grid strong {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+.add-block-grid span { font-size: 0.73rem; color: var(--grey); line-height: 1.4; }
+
+/* ============================================================
    NOT FOUND
    ============================================================ */
 

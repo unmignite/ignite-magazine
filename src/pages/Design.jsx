@@ -48,6 +48,7 @@ export default function Design() {
         <h1>Design<em>.</em></h1>
         <div className="studio-tools">
           <Link to="/studio" className="btn-ghost" style={{ textDecoration: 'none' }}>← Studio</Link>
+          <Link to="/studio/layout" className="btn-ghost" style={{ textDecoration: 'none' }}>Layout →</Link>
           <button className="btn-ghost" onClick={resetToDefaults}>Reset to defaults</button>
           <button className="btn-primary" onClick={onSave} disabled={busy}>
             {busy ? 'Saving…' : 'Save theme'}
