@@ -100,13 +100,34 @@ async function fetchRetry(url, opts = {}, tries = 4) {
 const escapeHtml = (s) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
+const NAMED_ENTITIES = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+  rsquo: '’', lsquo: '‘', ldquo: '“', rdquo: '”',
+  hellip: '…', mdash: '—', ndash: '–', middot: '·',
+}
+
+// The source HTML already contains entities (&quot;, &#x27;). Escaping those
+// again would turn "&quot;" into the literal text &quot; on the page, so they
+// must be decoded to real characters BEFORE re-escaping.
+const decodeEntities = (s) =>
+  s.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (whole, code) => {
+    if (code[0] === '#') {
+      const n = code[1].toLowerCase() === 'x'
+        ? parseInt(code.slice(2), 16)
+        : parseInt(code.slice(1), 10)
+      return Number.isFinite(n) && n > 0 ? String.fromCodePoint(n) : whole
+    }
+    const key = code.toLowerCase()
+    return key in NAMED_ENTITIES ? NAMED_ENTITIES[key] : whole
+  })
+
 // Rebuild a paragraph's inner HTML, keeping meaning (bold/italic/links) and
 // discarding Wix's presentation classes so our stylesheet takes over.
 function inlineHtml(node) {
   let out = ''
   for (const child of node.childNodes) {
     if (child.nodeType === 3) {
-      out += escapeHtml(child.rawText ?? '')
+      out += escapeHtml(decodeEntities(child.rawText ?? ''))
       continue
     }
     if (child.nodeType !== 1) continue
@@ -237,6 +258,18 @@ const uploadedCache = new Map()
 
 async function rehostImage(info) {
   if (uploadedCache.has(info.mediaId)) return uploadedCache.get(info.mediaId)
+
+  const publicUrl = supabase.storage.from('article-images').getPublicUrl(info.storagePath).data.publicUrl
+
+  // Already re-hosted by an earlier run? Reuse it rather than downloading
+  // hundreds of megabytes again.
+  try {
+    const head = await fetch(publicUrl, { method: 'HEAD' })
+    if (head.ok) {
+      uploadedCache.set(info.mediaId, publicUrl)
+      return publicUrl
+    }
+  } catch { /* fall through and upload */ }
 
   const res = await fetchRetry(info.downloadUrl)
   if (!res.ok) throw new Error(`image download failed: ${res.status}`)
