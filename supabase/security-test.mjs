@@ -113,5 +113,66 @@ console.log('using only the public key that ships in the browser.\n')
   check('anon CANNOT upload to storage', Boolean(error), error ? `blocked: ${error.message}` : 'UPLOAD SUCCEEDED')
 }
 
+// ============================================================================
+// Part 2 — the editor/admin boundary.
+// ============================================================================
+// Only runs if TEST_EDITOR_EMAIL / TEST_EDITOR_PASSWORD are set in .env.local.
+// Use the SHARED editor account (never a personal admin one). This proves the
+// limits the access model depends on: a Section Editor may write, but must not
+// delete articles or change what appears on the landing carousel.
+
+if (env.TEST_EDITOR_EMAIL && env.TEST_EDITOR_PASSWORD) {
+  console.log('Signing in as a Section Editor to test the role boundary.\n')
+
+  const ed = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY)
+  const { error: signInErr } = await ed.auth.signInWithPassword({
+    email: env.TEST_EDITOR_EMAIL,
+    password: env.TEST_EDITOR_PASSWORD,
+  })
+
+  if (signInErr) {
+    check('editor can sign in', false, signInErr.message)
+  } else {
+    check('editor CAN sign in', true)
+
+    // Should be allowed: see drafts, and create.
+    const { data: all } = await ed.from('articles').select('id, status, featured')
+    check('editor CAN see drafts', (all || []).some((a) => a.status !== 'published'),
+      `${(all || []).length} article(s) visible`)
+
+    const probeSlug = `role-test-${Date.now()}`
+    const { data: made, error: insErr } = await ed
+      .from('articles')
+      .insert({ slug: probeSlug, title: 'Role boundary probe', section: 'news', status: 'draft' })
+      .select()
+      .single()
+    check('editor CAN create an article', !insErr, insErr?.message)
+
+    // Should be refused: featuring, and deleting.
+    if (made) {
+      const { error: featErr } = await ed.from('articles').update({ featured: true }).eq('id', made.id)
+      check('editor CANNOT feature an article', Boolean(featErr), featErr?.message || 'FEATURE SUCCEEDED')
+
+      const { data: del } = await ed.from('articles').delete().eq('id', made.id).select()
+      check('editor CANNOT delete an article', (del || []).length === 0,
+        (del || []).length ? 'DELETED its own article' : 'delete refused')
+
+      // Clean up the probe using the admin key if one is available.
+      if (env.SUPABASE_SECRET_KEY) {
+        const admin = createClient(env.VITE_SUPABASE_URL, env.SUPABASE_SECRET_KEY)
+        await admin.from('articles').delete().eq('slug', probeSlug)
+        console.log('        (probe article cleaned up)')
+      } else {
+        console.log(`        NOTE: delete draft "${probeSlug}" in the Studio — no admin key to clean it up`)
+      }
+    }
+    await ed.auth.signOut()
+  }
+} else {
+  console.log('Skipping the editor/admin boundary tests.')
+  console.log('To run them, add TEST_EDITOR_EMAIL and TEST_EDITOR_PASSWORD')
+  console.log('(the shared editor account) to .env.local.')
+}
+
 console.log(`\n${passed} passed, ${failed} failed\n`)
 process.exit(failed ? 1 : 0)
