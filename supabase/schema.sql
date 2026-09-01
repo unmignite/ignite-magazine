@@ -216,6 +216,14 @@ grant select                         on public.profiles to authenticated;
 
 grant execute on function public.user_role() to anon, authenticated;
 
+-- service_role is the trusted server-side role behind a *secret* key. It
+-- bypasses RLS, but with auto-expose off it still needs explicit grants —
+-- without these, even admin tooling (backups, the one-time Wix migration)
+-- gets "permission denied". It is never used by the website itself.
+grant usage on schema public to service_role;
+grant all privileges on public.articles to service_role;
+grant all privileges on public.profiles to service_role;
+
 
 -- ----------------------------------------------------------------------------
 -- 8. Image storage
