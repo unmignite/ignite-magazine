@@ -30,6 +30,13 @@ jobs:
       - run: npm run build
         env:
           DEPLOY_BASE: /ignite-magazine/
+          # Vite inlines these into the bundle at build time. Both are public
+          # by design — the database is protected by Row-Level Security, not by
+          # hiding this key (see supabase/schema.sql). They live in repository
+          # secrets so no credential sits in the source, and so the project can
+          # be swapped without a code change.
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       # SPA fallback: GitHub Pages serves 404.html for unknown paths,
       # which lets React Router handle deep links like /article/<slug>
       - run: cp dist/index.html dist/404.html

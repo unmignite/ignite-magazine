@@ -311,7 +311,10 @@ for (const [i, post] of todo.entries()) {
       cover,
       cover_credit: '',
       tags,
-      featured: false, // curated deliberately in the Studio, not inherited
+      // `featured` is deliberately omitted. It is an editorial choice made in
+      // the Studio, not something to inherit from Wix — and leaving it out
+      // means re-running this migration never clobbers a curated carousel
+      // (nor trips the admin-only guard on that column).
       status: 'published',
       credits: { writer: post.owner?.name || '', editor: '', chief: '' },
       body,
