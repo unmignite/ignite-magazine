@@ -335,10 +335,10 @@ for (const [i, post] of todo.entries()) {
 
     const row = {
       slug: post.slug,
-      title: post.title || 'Untitled',
+      title: (post.title || 'Untitled').trim(),
       dek,
       section,
-      author: post.owner?.name || 'Ignite',
+      author: (post.owner?.name || 'Ignite').trim(),
       date: (post.firstPublishedDate || new Date().toISOString()).slice(0, 10),
       read_time: post.timeToRead || 4,
       cover,

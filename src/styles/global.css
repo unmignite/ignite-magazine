@@ -567,6 +567,88 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--grey);
   font-size: 1.1rem;
 }
+.link-button {
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--black);
+  border-bottom: 2px solid var(--accent, var(--pink));
+  padding: 0;
+}
+.link-button:hover { background: var(--yellow); }
+
+/* ---------- reader search + filters ---------- */
+
+.article-search { margin-bottom: 2.5rem; }
+
+.search-row {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 2px solid var(--black);
+  padding: 0 1rem;
+  background: var(--white);
+}
+.search-input span { font-size: 1.15rem; color: var(--grey); line-height: 1; }
+.search-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.85em 0;
+}
+.search-input:focus-within { outline: 3px solid var(--yellow); }
+/* hide the browser's own clear button — we have our own */
+.search-input input::-webkit-search-cancel-button { display: none; }
+
+.filter-toggle,
+.clear-filters {
+  border: 2px solid var(--black);
+  background: var(--white);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0 1.3em;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.filter-toggle:hover, .clear-filters:hover { background: var(--yellow); }
+.filter-toggle.on { background: var(--black); color: var(--white); }
+.clear-filters { border-color: var(--grey); color: var(--grey); }
+.clear-filters:hover { border-color: var(--black); color: var(--black); }
+
+.filter-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+  border: 2px solid var(--black);
+  border-top: none;
+  padding: 1.3rem;
+  background: #fafaf7;
+}
+.filter-panel .field { margin-bottom: 0; }
+
+.search-count {
+  margin-top: 0.9rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
 
 /* ============================================================
    ARTICLE PAGE
