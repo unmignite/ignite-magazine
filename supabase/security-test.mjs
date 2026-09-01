@@ -113,6 +113,26 @@ console.log('using only the public key that ships in the browser.\n')
   check('anon CANNOT upload to storage', Boolean(error), error ? `blocked: ${error.message}` : 'UPLOAD SUCCEEDED')
 }
 
+// --- 8. Readership data is staff-only -------------------------------------
+// Readers record views but must never be able to read them back, and the
+// aggregate function must refuse anyone who isn't staff.
+{
+  const { data, error } = await supabase.from('article_views').select('*').limit(5)
+  const leaked = (data || []).length
+  check(
+    'anon CANNOT read raw view records',
+    Boolean(error) || leaked === 0,
+    error ? `blocked: ${error.message}` : leaked ? `LEAKED ${leaked} rows` : 'no rows returned'
+  )
+
+  const { error: rpcErr } = await supabase.rpc('analytics_overview', { days: 30 })
+  check(
+    'anon CANNOT call analytics_overview',
+    Boolean(rpcErr),
+    rpcErr ? `blocked: ${rpcErr.message}` : 'ANALYTICS READABLE BY THE PUBLIC'
+  )
+}
+
 // ============================================================================
 // Part 2 — the editor/admin boundary.
 // ============================================================================

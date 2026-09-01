@@ -14,6 +14,7 @@ import Studio from './pages/Studio'
 import Editor from './pages/Editor'
 import Design from './pages/Design'
 import LayoutEditor from './pages/Layout'
+import Analytics from './pages/Analytics'
 import NotFound from './pages/NotFound'
 
 function ScrollToTop() {
@@ -47,6 +48,7 @@ function Shell() {
           <Route path="/studio/new" element={<Protected><Editor /></Protected>} />
           <Route path="/studio/design" element={<Protected><Design /></Protected>} />
           <Route path="/studio/layout" element={<Protected><LayoutEditor /></Protected>} />
+          <Route path="/studio/analytics" element={<Protected><Analytics /></Protected>} />
           <Route path="/studio/edit/:id" element={<Protected><Editor /></Protected>} />
           <Route path="*" element={<NotFound />} />
         </Routes>

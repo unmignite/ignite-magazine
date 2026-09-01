@@ -16,6 +16,7 @@ export default function AdminBar() {
       <span className="spacer" />
       <Link to="/studio">Studio</Link>
       <Link to="/studio/new">+ New article</Link>
+      <Link to="/studio/analytics">Analytics</Link>
       {can(user, 'design') && <Link to="/studio/design">Design</Link>}
       {can(user, 'design') && <Link to="/studio/layout">Layout</Link>}
       <button

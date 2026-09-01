@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import ArticleCard, { sectionOf } from '../components/ArticleCard'
 import ShareBar from '../components/ShareBar'
+import { recordView } from '../lib/analytics'
 import NotFound from './NotFound'
 
 const fmtDate = (d) =>
@@ -12,6 +14,13 @@ export default function Article() {
   const { slug } = useParams()
   const { articles, user, getArticle } = useStore()
   const article = getArticle(slug)
+
+  // Count the read. Staff visits are excluded so editing doesn't skew the data.
+  useEffect(() => {
+    if (article?.id && article.status === 'published') {
+      recordView(article.id, { isStaff: Boolean(user) })
+    }
+  }, [article?.id, article?.status, user])
 
   if (!article || (article.status !== 'published' && !user)) return <NotFound />
 
