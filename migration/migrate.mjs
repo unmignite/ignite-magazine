@@ -121,6 +121,11 @@ const decodeEntities = (s) =>
     return key in NAMED_ENTITIES ? NAMED_ENTITIES[key] : whole
   })
 
+// Links back to the old site (absolute or relative) will 404 once Wix is
+// cancelled, so they are unwrapped to plain text rather than carried over.
+const isDeadWixLink = (href) =>
+  /^https?:\/\/(www\.)?unmignite\.com/i.test(href) || href.startsWith('/')
+
 // Rebuild a paragraph's inner HTML, keeping meaning (bold/italic/links) and
 // discarding Wix's presentation classes so our stylesheet takes over.
 function inlineHtml(node) {
@@ -142,7 +147,10 @@ function inlineHtml(node) {
     else if (tag === 'br') out += '<br />'
     else if (tag === 'a') {
       const href = child.getAttribute('href')
-      out += href ? `<a href="${href}">${inner}</a>` : inner
+      // Keep genuine outbound citations, but drop anything pointing back at the
+      // old Wix site — those die with the subscription, and most are Wix
+      // auto-linking "#1" as a hashtag rather than a link anyone intended.
+      out += href && !isDeadWixLink(href) ? `<a href="${href}">${inner}</a>` : inner
     } else {
       out += inner // unwrap spans/divs
     }
