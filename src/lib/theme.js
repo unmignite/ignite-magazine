@@ -14,6 +14,10 @@ export const FONT_CHOICES = [
   { label: 'Courier (monospace)', value: "'Courier New', Courier, monospace" },
 ]
 
+// `label` here is only the starting name. Designers can rename each swatch in
+// the Design panel (a palette whose primary is green shouldn't say "Pink"), and
+// the chosen names are stored in theme.labels. Renaming is purely cosmetic —
+// the underlying token key and CSS variable never change, so nothing breaks.
 export const COLOR_FIELDS = [
   { key: 'yellow', cssVar: '--yellow', label: 'Yellow', hint: 'Highlights, hover states, the join banner' },
   { key: 'pink', cssVar: '--pink', label: 'Pink', hint: 'Primary accent — logo dot, pull quotes, drop caps' },
@@ -32,7 +36,14 @@ export const FONT_FIELDS = [
   { key: 'serif', cssVar: '--font-serif', label: 'Accent font', hint: 'Italic deks and pull quotes' },
 ]
 
+// Default swatch names, derived from COLOR_FIELDS so a newly added colour
+// automatically gets a sensible starting name.
+export const DEFAULT_LABELS = Object.fromEntries(
+  COLOR_FIELDS.map((f) => [f.key, f.label])
+)
+
 export const DEFAULT_THEME = {
+  labels: DEFAULT_LABELS,
   colors: {
     black: '#0a0a0a',
     white: '#ffffff',
@@ -57,6 +68,7 @@ export const DEFAULT_THEME = {
 // Saved themes may be partial or from an older version — merge over defaults so
 // a missing key never blanks out the site.
 export const mergeTheme = (saved) => ({
+  labels: { ...DEFAULT_LABELS, ...(saved?.labels || {}) },
   colors: { ...DEFAULT_THEME.colors, ...(saved?.colors || {}) },
   fonts: { ...DEFAULT_THEME.fonts, ...(saved?.fonts || {}) },
   hero: { ...DEFAULT_THEME.hero, ...(saved?.hero || {}) },

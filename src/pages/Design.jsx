@@ -74,10 +74,16 @@ export default function Design() {
                 type="color"
                 value={draft.colors[f.key]}
                 onChange={(e) => update(['colors', f.key], e.target.value)}
-                aria-label={f.label}
+                aria-label={draft.labels?.[f.key] ?? f.label}
               />
               <div className="color-meta">
-                <strong>{f.label}</strong>
+                <input
+                  className="label-input"
+                  value={draft.labels?.[f.key] ?? f.label}
+                  onChange={(e) => update(['labels', f.key], e.target.value)}
+                  title="Rename this swatch — cosmetic only, nothing else changes"
+                  spellCheck="false"
+                />
                 <span>{f.hint}</span>
               </div>
               <input
