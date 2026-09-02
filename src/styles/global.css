@@ -901,6 +901,8 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   color: rgba(255,255,255,0.45);
 }
+.footer-legal a { transition: color 0.15s; }
+.footer-legal a:hover { color: var(--yellow); }
 
 /* ============================================================
    LOGIN
