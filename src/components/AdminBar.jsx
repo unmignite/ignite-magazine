@@ -11,7 +11,7 @@ export default function AdminBar() {
     <div className="adminbar">
       <span className="dot" />
       <span className="who">
-        {user.name} · {ROLE_LABELS[user.role] || user.role}
+        {user.name} · {user.title || ROLE_LABELS[user.role] || user.role}
       </span>
       <span className="spacer" />
       <Link to="/studio">Studio</Link>

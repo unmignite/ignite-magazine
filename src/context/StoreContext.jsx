@@ -42,7 +42,7 @@ export function StoreProvider({ children }) {
     ;(async () => {
       const { data } = await supabase
         .from('profiles')
-        .select('name, role')
+        .select('name, role, title')
         .eq('id', session.user.id)
         .maybeSingle()
 
@@ -52,6 +52,8 @@ export function StoreProvider({ children }) {
         email: session.user.email,
         name: data?.name || session.user.email.split('@')[0],
         role: data?.role || 'editor',
+        // Display-only job title. Falls back to the role's label when unset.
+        title: data?.title || null,
       })
     })()
 
