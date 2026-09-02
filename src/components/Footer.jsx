@@ -33,8 +33,8 @@ export default function Footer() {
       <div className="footer-mark">IGNITE</div>
       <div className="footer-legal">
         <span>© {new Date().getFullYear()} Ignite — UNM Student Media</span>
-        <a href="https://www.instagram.com/unmignite/" target="_blank" rel="noreferrer">
-          @unmignite
+        <a href="https://www.instagram.com/unm_ignite/" target="_blank" rel="noreferrer">
+          @unm_ignite
         </a>
       </div>
     </footer>
