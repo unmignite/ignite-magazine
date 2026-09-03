@@ -1937,3 +1937,12 @@ button { font-family: inherit; cursor: pointer; }
   align-items: center;
 }
 .faq-foot-actions a { text-decoration: none; }
+
+.faq-copied {
+  margin-top: 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grey);
+}

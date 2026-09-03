@@ -5,6 +5,7 @@ import { answeredGroups } from '../data/faqs'
 export default function Faqs() {
   const groups = answeredGroups()
   const [active, setActive] = useState(groups[0]?.id)
+  const [copied, setCopied] = useState(false)
 
   const group = groups.find((g) => g.id === active) || groups[0]
 
@@ -73,11 +74,28 @@ export default function Faqs() {
             >
               @unm_ignite
             </a>
-            <a className="btn-ghost" href="mailto:unmignite@gmail.com">
-              unmignite@gmail.com
+            {/* `mailto:` silently does nothing for anyone without a desktop mail
+                client (most webmail users), so copy the address as well. The
+                default is NOT prevented — people who do have a client still get
+                their compose window, and everyone else gets it on the clipboard. */}
+            <a
+              className="btn-ghost"
+              href="mailto:unmignite@gmail.com"
+              onClick={() => {
+                navigator.clipboard?.writeText('unmignite@gmail.com').catch(() => {})
+                setCopied(true)
+                setTimeout(() => setCopied(false), 3000)
+              }}
+            >
+              {copied ? 'Copied ✓' : 'unmignite@gmail.com'}
             </a>
             <Link className="btn-ghost" to="/articles">Browse all articles</Link>
           </div>
+          {copied && (
+            <p className="faq-copied" aria-live="polite">
+              Address copied to your clipboard.
+            </p>
+          )}
         </div>
       </div>
     </>
