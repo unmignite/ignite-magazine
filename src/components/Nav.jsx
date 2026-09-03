@@ -50,6 +50,7 @@ export default function Nav() {
               {s.name}
             </Link>
           ))}
+          <Link to="/faqs" style={{ '--accent': 'var(--yellow)' }}>FAQs</Link>
           <Link to={user ? '/studio' : '/login'} style={{ '--accent': 'var(--yellow)' }}>
             {user ? 'Studio' : 'Log in'}
           </Link>
