@@ -48,9 +48,8 @@ export const FAQ_GROUPS = [
         a: "Once you receive the link to our WhatsApp Community, join the section(s) you'd like to contribute to. Each week, your section editor will share some article ideas for you to claim. After that, you can begin writing — just be sure to submit your article before the deadline set by your editor! If you're feeling inspired, you're also welcome to suggest your own article ideas!",
       },
       {
-        // Waiting on the answer for this one — it stays hidden until filled in.
         q: 'What tone should I write in?',
-        a: '',
+        a: "Here at IGNITE, we value your personal style and voice. There's no specific tone you're required to stick with — just be respectful in your writing!",
       },
       {
         q: 'Can I join as a contributing writer anytime I want?',
