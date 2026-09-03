@@ -16,6 +16,7 @@ import Design from './pages/Design'
 import LayoutEditor from './pages/Layout'
 import Analytics from './pages/Analytics'
 import NotFound from './pages/NotFound'
+import { LegacyPostRedirect, legacyTargetFor } from './components/LegacyRedirect'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -29,6 +30,13 @@ function Protected({ children }) {
   const { user } = useStore()
   if (!user) return <Navigate to="/login" replace />
   return children
+}
+
+// Try to rescue an old Wix link before showing the 404.
+function LegacyOrNotFound() {
+  const { pathname } = useLocation()
+  const target = legacyTargetFor(pathname)
+  return target ? <Navigate to={target} replace /> : <NotFound />
 }
 
 function Shell() {
@@ -50,7 +58,9 @@ function Shell() {
           <Route path="/studio/layout" element={<Protected><LayoutEditor /></Protected>} />
           <Route path="/studio/analytics" element={<Protected><Analytics /></Protected>} />
           <Route path="/studio/edit/:id" element={<Protected><Editor /></Protected>} />
-          <Route path="*" element={<NotFound />} />
+          {/* Old Wix URLs — see components/LegacyRedirect.jsx */}
+          <Route path="/post/:slug" element={<LegacyPostRedirect />} />
+          <Route path="*" element={<LegacyOrNotFound />} />
         </Routes>
       </main>
       <Footer />
