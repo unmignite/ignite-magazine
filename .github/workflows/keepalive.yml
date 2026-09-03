@@ -1,0 +1,72 @@
+name: Keep database awake & back up articles
+
+# Two jobs in one, both cheap:
+#
+# 1. KEEP AWAKE — Supabase pauses a free project after ~7 days with no API
+#    requests. Real reader traffic normally prevents that, but a quiet
+#    semester break could genuinely hit zero. This runs every 3 days, so the
+#    counter never gets close.
+#
+# 2. BACK UP — the free tier has no automatic backups. This exports every
+#    published article to backups/articles.json and commits it, giving a
+#    versioned, off-site copy of the archive in git history at no cost.
+#    (Drafts aren't included: the public key can't read them, by design.)
+
+on:
+  schedule:
+    - cron: '17 3 */3 * *' # 03:17 UTC, every 3 days
+  workflow_dispatch: # lets anyone run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  ping-and-backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wake the database
+        env:
+          URL: ${{ secrets.VITE_SUPABASE_URL }}
+          KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            "$URL/rest/v1/articles?select=id&limit=1" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY")
+          echo "Supabase responded: HTTP $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::Database unreachable (HTTP $code). It may be paused, or the keys may have changed."
+            exit 1
+          fi
+
+      - name: Export published articles
+        env:
+          URL: ${{ secrets.VITE_SUPABASE_URL }}
+          KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          mkdir -p backups
+          curl -s "$URL/rest/v1/articles?select=*&status=eq.published&order=date.desc" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" \
+            | python3 -m json.tool > backups/articles.json
+          count=$(python3 -c "import json;print(len(json.load(open('backups/articles.json'))))")
+          echo "Backed up $count published articles."
+          # A sane floor: if the export is suspiciously small, something is wrong
+          # and we must NOT overwrite a good backup with a broken one.
+          if [ "$count" -lt 50 ]; then
+            echo "::error::Only $count articles returned — refusing to overwrite the backup."
+            exit 1
+          fi
+
+      - name: Commit the backup if it changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backups/articles.json
+          if git diff --staged --quiet; then
+            echo "No content changes since the last backup."
+          else
+            git commit -m "Back up articles ($(date -u +%Y-%m-%d))"
+            git push
+            echo "Backup committed."
+          fi
