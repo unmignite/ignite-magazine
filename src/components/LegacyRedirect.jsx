@@ -11,6 +11,7 @@ import { Navigate, useParams } from 'react-router-dom'
 //   /sports-1             → /section/sports          (Wix's suffixed slugs)
 //   /notts-uncovered-1    → /section/notts-uncovered
 //   /the-review           → /articles                (section no longer exists)
+//   /faqs                 → unchanged; the new page uses the same path
 //
 // Safe to keep indefinitely; it costs nothing and old links live a long time.
 

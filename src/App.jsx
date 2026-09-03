@@ -8,6 +8,7 @@ import AdminBar from './components/AdminBar'
 import Home from './pages/Home'
 import Section from './pages/Section'
 import AllArticles from './pages/AllArticles'
+import Faqs from './pages/Faqs'
 import Article from './pages/Article'
 import Login from './pages/Login'
 import Studio from './pages/Studio'
@@ -49,6 +50,7 @@ function Shell() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/articles" element={<AllArticles />} />
+          <Route path="/faqs" element={<Faqs />} />
           <Route path="/section/:slug" element={<Section />} />
           <Route path="/article/:slug" element={<Article />} />
           <Route path="/login" element={<Login />} />
