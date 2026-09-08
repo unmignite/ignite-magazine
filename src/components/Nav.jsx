@@ -3,12 +3,14 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { SECTIONS, accentVars } from '../data/sections'
 import { useStore } from '../context/StoreContext'
 import { useTheme } from '../context/ThemeContext'
+import SearchOverlay, { MagnifierIcon } from './SearchOverlay'
 
 // Every section lives behind the menu rather than in the bar. Nine links across
 // the top left no room to breathe and pushed the type down to 11px; one button
 // keeps the header quiet and lets the sections have a page of their own.
 export default function Nav() {
   const [open, setOpen] = useState(false)
+  const [searching, setSearching] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { user } = useStore()
   const { homepage } = useTheme()
@@ -31,16 +33,26 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [overHero])
 
-  // Close on navigation, and hold the page still while the menu is over it.
-  useEffect(() => setOpen(false), [pathname])
+  // Close both overlays on navigation, and hold the page still while either is
+  // over it.
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [open])
+    setOpen(false)
+    setSearching(false)
+  }, [pathname])
 
-  // Light treatment: over the opening image, and over the open menu — both are
+  const covered = open || searching
+  useEffect(() => {
+    document.body.style.overflow = covered ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [covered])
+
+  // Only one panel at a time — they occupy the same screen.
+  const openMenu = (next) => { setOpen(next); if (next) setSearching(false) }
+  const openSearch = (next) => { setSearching(next); if (next) setOpen(false) }
+
+  // Light treatment: over the opening image, and over an open panel — both are
   // dark, so the header needs white type either way.
-  const light = open || (overHero && !scrolled)
+  const light = covered || (overHero && !scrolled)
 
   return (
     <>
@@ -50,21 +62,33 @@ export default function Nav() {
             className={`burger ${open ? 'open' : ''}`}
             aria-expanded={open}
             aria-label={open ? 'Close menu' : 'Open menu'}
-            onClick={() => setOpen(!open)}
+            onClick={() => openMenu(!open)}
           >
             <span className="burger-bars"><i /><i /><i /></span>
             <span className="burger-text">{open ? 'Close' : 'Menu'}</span>
           </button>
 
-          <Link to="/" className="logo" onClick={() => setOpen(false)}>
+          <Link to="/" className="logo" onClick={() => openMenu(false)}>
             IGNITE<em>.</em>
           </Link>
 
-          <Link to={user ? '/studio' : '/login'} className="nav-login">
-            {user ? 'Studio' : 'Log in'}
-          </Link>
+          <div className="nav-right">
+            <button
+              className={`nav-search ${searching ? 'on' : ''}`}
+              aria-expanded={searching}
+              aria-label={searching ? 'Close search' : 'Search articles'}
+              onClick={() => openSearch(!searching)}
+            >
+              {searching ? <span aria-hidden="true">✕</span> : <MagnifierIcon />}
+            </button>
+            <Link to={user ? '/studio' : '/login'} className="nav-login">
+              {user ? 'Studio' : 'Log in'}
+            </Link>
+          </div>
         </div>
       </header>
+
+      {searching && <SearchOverlay onClose={() => setSearching(false)} />}
 
       {open && (
         <div className="nav-menu" onClick={() => setOpen(false)}>
