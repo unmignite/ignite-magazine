@@ -47,11 +47,17 @@ function Toolbar({ editor }) {
     if (url) editor.chain().focus().setLink({ href: url }).run()
   }
 
+  // The credit is stored on the image itself, as its alt text, and the article
+  // page draws the caption from there. It used to be inserted as a separate
+  // italic paragraph, which looked different from every migrated article and
+  // came adrift from its image the moment anyone edited around it.
+  const askCredit = () =>
+    (window.prompt('Photo credit (optional — shown under the image)') || '').trim()
+
   const addImageByUrl = () => {
     const url = window.prompt('Image URL')
     if (!url) return
-    editor.chain().focus().setImage({ src: url }).run()
-    addCredit()
+    editor.chain().focus().setImage({ src: url, alt: askCredit() }).run()
   }
 
   const addImageByUpload = async (e) => {
@@ -60,21 +66,9 @@ function Toolbar({ editor }) {
     e.target.value = ''
     try {
       const url = await uploadImage(file)
-      editor.chain().focus().setImage({ src: url }).run()
-      addCredit()
+      editor.chain().focus().setImage({ src: url, alt: askCredit() }).run()
     } catch (err) {
       alert(err.message)
-    }
-  }
-
-  const addCredit = () => {
-    const credit = window.prompt('Photo credit / reference (optional — leave blank to skip)')
-    if (credit) {
-      editor
-        .chain()
-        .focus()
-        .insertContent(`<p><em>Credits: ${credit}</em></p>`)
-        .run()
     }
   }
 

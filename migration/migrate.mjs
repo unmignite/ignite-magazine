@@ -241,7 +241,15 @@ function extractPost(html, dek = '') {
       const info = wixImage(img.getAttribute('src') || '')
       if (info) {
         images.push(info)
-        parts.push(`<img src="__IMG__${info.mediaId}__" alt="" />`)
+        // The photographer credit sits in the figcaption under the image, and
+        // Wix repeats it in the img's alt. It goes into alt on our side, which
+        // is what the article page builds the visible caption from — an earlier
+        // version of this script wrote alt="" and lost 611 credits.
+        const credit = decodeEntities(
+          (block.querySelector('figcaption')?.text || img.getAttribute('alt') || '').trim()
+        ).replace(/\s+/g, ' ')
+        const alt = credit ? escapeHtml(credit).replace(/"/g, '&quot;') : ''
+        parts.push(`<img src="__IMG__${info.mediaId}__" alt="${alt}" />`)
       }
     } else if (para) {
       const inner = inlineHtml(para)

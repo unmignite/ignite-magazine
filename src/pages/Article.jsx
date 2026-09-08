@@ -11,6 +11,28 @@ import NotFound from './NotFound'
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
+// Photographer credits live in each image's alt attribute, and the visible
+// caption is built from it here rather than stored in the body.
+//
+// That split is deliberate. Running <figure><figcaption> markup through the
+// Studio's editor returns `<img><p>Photo Credits: …</p>` — the caption survives
+// only as a stray body paragraph — while alt comes back untouched. Keeping the
+// credit in alt means an editor can open and save a migrated article without
+// destroying it, and the markup it renders as stays our business.
+// Most credits carried over from the old site already begin "Photo Credits:",
+// so only add the label when the text doesn't introduce itself.
+const creditLine = (s) => {
+  const t = (s || '').trim()
+  return /^(photo\s+)?credits?\s*[:—-]/i.test(t) ? t : `Credits: ${t}`
+}
+
+const captionImages = (html) =>
+  html.replace(/<img\b[^>]*>/g, (tag) => {
+    const alt = tag.match(/alt="([^"]*)"/)?.[1]
+    if (!alt || !alt.trim()) return tag
+    return `<figure>${tag}<figcaption>${alt}</figcaption></figure>`
+  })
+
 export default function Article() {
   const { slug } = useParams()
   const { articles, user, getArticle } = useStore()
@@ -34,7 +56,7 @@ export default function Article() {
     <article style={accentVars(sec)}>
       <div className="article-cover">
         <img src={article.cover} alt={article.title} />
-        {article.coverCredit && <span className="credit">Credits: {article.coverCredit}</span>}
+        {article.coverCredit && <span className="credit">{creditLine(article.coverCredit)}</span>}
       </div>
 
       <header className="article-head">
@@ -57,7 +79,10 @@ export default function Article() {
         <ShareBar title={article.title} />
       </header>
 
-      <div className="article-body" dangerouslySetInnerHTML={{ __html: article.body }} />
+      <div
+        className="article-body"
+        dangerouslySetInnerHTML={{ __html: captionImages(article.body) }}
+      />
 
       {article.credits && (
         <div className="article-credits">

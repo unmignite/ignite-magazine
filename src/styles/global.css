@@ -1222,6 +1222,20 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--black);
 }
 .article-body img { width: 100%; margin: 0 auto; }
+
+/* Photographer credit under each image — built from the image's alt in
+   src/pages/Article.jsx. Quiet, but it has to be legible: these are people's
+   names and the publications they shot for. */
+.article-body figure { margin: 0; }
+.article-body figcaption {
+  margin-top: 0.6em;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--grey);
+  text-align: center;
+}
 .article-body a { border-bottom: 2px solid var(--pink); }
 .article-body a:hover { background: var(--yellow); }
 .article-body ul, .article-body ol { padding-left: 1.4em; }
