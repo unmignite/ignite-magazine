@@ -3,8 +3,47 @@ import { Link } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { useTheme } from '../context/ThemeContext'
 import { can } from '../lib/roles'
-import { COLOR_FIELDS, FONT_FIELDS, FONT_CHOICES, DEFAULT_THEME } from '../lib/theme'
-import { SECTIONS } from '../data/sections'
+import {
+  COLOR_FIELDS, SECTION_FIELDS, STATUS_FIELDS,
+  FONT_FIELDS, FONT_CHOICES, readableInk,
+} from '../lib/theme'
+import { SECTIONS, accentVars } from '../data/sections'
+
+// One swatch: colour picker, name, hint, hex box. `group` is the key in the
+// theme object it writes to — 'colors', 'sections' or 'status'.
+function ColorRow({ field, group, draft, update, renameable = false, hint }) {
+  const name = renameable ? (draft.labels?.[field.key] ?? field.label) : field.label
+  return (
+    <div className="color-row">
+      <input
+        type="color"
+        value={draft[group][field.key]}
+        onChange={(e) => update([group, field.key], e.target.value)}
+        aria-label={name}
+      />
+      <div className="color-meta">
+        {renameable ? (
+          <input
+            className="label-input"
+            value={name}
+            onChange={(e) => update(['labels', field.key], e.target.value)}
+            title="Rename this swatch — cosmetic only, nothing else changes"
+            spellCheck="false"
+          />
+        ) : (
+          <span className="label-fixed">{name}</span>
+        )}
+        <span>{hint ?? field.hint}</span>
+      </div>
+      <input
+        className="hex-input"
+        value={draft[group][field.key]}
+        onChange={(e) => update([group, field.key], e.target.value)}
+        spellCheck="false"
+      />
+    </div>
+  )
+}
 
 export default function Design() {
   const { user } = useStore()
@@ -68,33 +107,58 @@ export default function Design() {
 
       <div className="design-grid">
         <section className="design-block">
-          <h2>Palette</h2>
+          <h2>Brand palette</h2>
+          <p className="hint palette-note">
+            Decorative only — the logo dot, hover highlights and the join banner.
+            Nothing here changes a section colour or a button's meaning.
+          </p>
           {COLOR_FIELDS.map((f) => (
-            <div className="color-row" key={f.key}>
-              <input
-                type="color"
-                value={draft.colors[f.key]}
-                onChange={(e) => update(['colors', f.key], e.target.value)}
-                aria-label={draft.labels?.[f.key] ?? f.label}
-              />
-              <div className="color-meta">
-                <input
-                  className="label-input"
-                  value={draft.labels?.[f.key] ?? f.label}
-                  onChange={(e) => update(['labels', f.key], e.target.value)}
-                  title="Rename this swatch — cosmetic only, nothing else changes"
-                  spellCheck="false"
-                />
-                <span>{f.hint}</span>
-              </div>
-              <input
-                className="hex-input"
-                value={draft.colors[f.key]}
-                onChange={(e) => update(['colors', f.key], e.target.value)}
-                spellCheck="false"
-              />
-            </div>
+            <ColorRow key={f.key} field={f} group="colors" draft={draft} update={update} renameable />
           ))}
+        </section>
+
+        <section className="design-block">
+          <h2>Section colours</h2>
+          <p className="hint palette-note">
+            One per section, used for its chip and the banner on its page.
+            All white gives the monochrome look.
+          </p>
+          {SECTION_FIELDS.map((f) => {
+            const c = draft.sections[f.key]
+            // Say out loud what the automatic ink is doing, so a pale colour
+            // that "does nothing" on white isn't a mystery.
+            const ink = readableInk(c, null)
+            return (
+              <ColorRow
+                key={f.key}
+                field={f}
+                group="sections"
+                draft={draft}
+                update={update}
+                hint={
+                  ink
+                    ? 'Underlines and drop caps use this colour too.'
+                    : 'Too pale to read on white — underlines and drop caps stay black.'
+                }
+              />
+            )
+          })}
+        </section>
+
+        <section className="design-block">
+          <h2>Status colours</h2>
+          <p className="hint palette-note">
+            These carry meaning rather than style. Readers and editors expect red
+            to mean “this can't be undone” — worth leaving alone.
+          </p>
+          {STATUS_FIELDS.map((f) => (
+            <ColorRow key={f.key} field={f} group="status" draft={draft} update={update} />
+          ))}
+          <div className="status-preview">
+            <button type="button" className="btn-danger" disabled>Delete</button>
+            <span className="status-chip draft">draft</span>
+            <span className="status-chip published">published</span>
+          </div>
         </section>
 
         <section className="design-block">
@@ -139,19 +203,13 @@ export default function Design() {
           </p>
 
           <div className="swatch-row">
-            {SECTIONS.slice(0, 6).map((s) => (
-              <span
-                key={s.slug}
-                className="chip"
-                style={{ background: s.color, color: s.slug === 'the-review' ? '#fff' : '#000' }}
-              >
-                {s.name}
-              </span>
+            {SECTIONS.map((s) => (
+              <span key={s.slug} className="chip" style={accentVars(s)}>{s.name}</span>
             ))}
           </div>
 
-          <div className="preview-card">
-            <span className="chip" style={{ background: 'var(--yellow)' }}>Music</span>
+          <div className="preview-card" style={accentVars(SECTIONS[0])}>
+            <span className="chip">{SECTIONS[0].name}</span>
             <h3 style={{ fontFamily: 'var(--font-display)' }}>
               A Headline In The Display Font
             </h3>
@@ -163,7 +221,7 @@ export default function Design() {
               <em>italic</em> both appear in article text.
             </p>
             <blockquote>A pull quote, in the accent font.</blockquote>
-            <span className="read-now" style={{ borderBottom: '3px solid var(--pink)' }}>Read now →</span>
+            <span className="read-now" style={{ borderBottom: '3px solid var(--accent-ink)' }}>Read now →</span>
           </div>
         </section>
       </div>

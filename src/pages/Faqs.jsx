@@ -11,7 +11,7 @@ export default function Faqs() {
 
   return (
     <>
-      <div className="section-hero" style={{ '--accent': 'var(--yellow)' }}>
+      <div className="section-hero" style={{ '--accent': 'var(--yellow)', '--accent-ink': 'var(--black)' }}>
         <h1 className="display">FAQs</h1>
         <p>Wondering about something? Your answer might be right here.</p>
       </div>

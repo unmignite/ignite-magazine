@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import ArticleCard, { sectionOf } from '../components/ArticleCard'
+import { accentVars } from '../data/sections'
 import ShareBar from '../components/ShareBar'
 import { recordView } from '../lib/analytics'
 import NotFound from './NotFound'
@@ -30,20 +31,14 @@ export default function Article() {
     .slice(0, 3)
 
   return (
-    <article style={{ '--accent': sec.color }}>
+    <article style={accentVars(sec)}>
       <div className="article-cover">
         <img src={article.cover} alt={article.title} />
         {article.coverCredit && <span className="credit">Credits: {article.coverCredit}</span>}
       </div>
 
       <header className="article-head">
-        <Link
-          to={`/section/${sec.slug}`}
-          className="chip"
-          style={{ background: sec.color, color: sec.slug === 'the-review' ? '#fff' : '#000' }}
-        >
-          {sec.name}
-        </Link>
+        <Link to={`/section/${sec.slug}`} className="chip">{sec.name}</Link>
         <h1 className="display">{article.title}</h1>
         {article.dek && <p className="dek">{article.dek}</p>}
         <div className="article-byline">
@@ -55,7 +50,7 @@ export default function Article() {
           {article.status === 'draft' && (
             <>
               <span className="accent">✦</span>
-              <span style={{ color: 'var(--orange)' }}>Draft — only visible to editors</span>
+              <span style={{ color: 'var(--draft)' }}>Draft — only visible to editors</span>
             </>
           )}
         </div>
@@ -82,7 +77,7 @@ export default function Article() {
 
       {related.length > 0 && (
         <section className="section-block related">
-          <div className="block-head" style={{ '--accent': sec.color }}>
+          <div className="block-head" style={accentVars(sec)}>
             <h2>More {sec.name}<span className="accent-dot">.</span></h2>
             <Link className="see-all" to={`/section/${sec.slug}`}>See all →</Link>
           </div>

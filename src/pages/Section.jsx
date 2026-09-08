@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
-import { SECTIONS } from '../data/sections'
+import { SECTIONS, accentVars } from '../data/sections'
 import ArticleCard from '../components/ArticleCard'
 import ArticleSearch, { useArticleSearch } from '../components/ArticleSearch'
 import NotFound from './NotFound'
@@ -23,12 +23,12 @@ export default function Section() {
 
   return (
     <>
-      <div className="section-hero" style={{ '--accent': section.color }}>
+      <div className="section-hero" style={accentVars(section)}>
         <h1 className="display">{section.name}</h1>
         <p>{section.blurb}</p>
       </div>
 
-      <div className="section-list" style={{ '--accent': section.color }}>
+      <div className="section-list" style={accentVars(section)}>
         {inSection.length > 0 && (
           <ArticleSearch search={search} total={inSection.length} />
         )}

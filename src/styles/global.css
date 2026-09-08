@@ -10,11 +10,33 @@
   --grey: #737373;
   --grey-light: #e8e8e6;
 
+  /* Brand palette — decorative only. Logo dot, hovers, the join banner. */
   --yellow: #ffed00;
   --red: #f73630;
   --pink: #ff10a3;
   --green: #8acd01;
   --orange: #fc4c00;
+
+  /* Status palette — these colours mean something. Red says "irreversible".
+     Kept separate from the brand palette so restyling never changes what a
+     button communicates. Edited under "Status colours" in the Design panel. */
+  --danger: #f73630;
+  --draft: #fc4c00;
+  --published: #8acd01;
+
+  /* Section palette — one per section, all white for the monochrome look.
+     Each has a companion --*-ink: the readable version for hairlines on a
+     white page, worked out automatically in src/lib/theme.js. These defaults
+     are what readers see for the split second before the saved theme loads,
+     so they must match DEFAULT_THEME.sections. */
+  --sec-music: #ffffff;            --sec-music-ink: #0a0a0a;
+  --sec-film-tv: #ffffff;          --sec-film-tv-ink: #0a0a0a;
+  --sec-beauty-style: #ffffff;     --sec-beauty-style-ink: #0a0a0a;
+  --sec-opinions: #ffffff;         --sec-opinions-ink: #0a0a0a;
+  --sec-food-travel: #ffffff;      --sec-food-travel-ink: #0a0a0a;
+  --sec-news: #ffffff;             --sec-news-ink: #0a0a0a;
+  --sec-sports: #ffffff;           --sec-sports-ink: #0a0a0a;
+  --sec-notts-uncovered: #ffffff;  --sec-notts-uncovered-ink: #0a0a0a;
 
   --font-display: 'League Spartan', 'Arial Black', sans-serif;
   --font-body: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
@@ -78,9 +100,13 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: var(--yellow);
+  /* Filled with the section colour. The border is that colour's ink, which
+     equals the fill whenever the fill is dark enough to read — so a coloured
+     chip looks borderless, and a white chip gets the black outline it needs
+     to exist at all on a white page. */
+  background: var(--accent, var(--yellow));
   color: var(--black);
-  border: none;
+  border: 2px solid var(--accent-ink, transparent);
 }
 
 /* ============================================================
@@ -162,14 +188,16 @@ button { font-family: inherit; cursor: pointer; }
   position: relative;
   white-space: nowrap;
 }
-/* "All" leads the nav, so give it a little more presence */
-.nav-links .nav-all { --accent: var(--yellow); }
+/* "All" leads the nav, so give it a little more presence. It needs its own ink
+   because yellow on white is 1.21:1 — an underline you cannot see. */
+.nav-links .nav-all { --accent: var(--yellow); --accent-ink: var(--black); }
 .nav-links a::after {
   content: '';
   position: absolute;
   left: 0; bottom: 0;
   height: 3px; width: 0;
-  background: var(--accent, var(--pink));
+  /* The nav sits on white, so this needs the ink, not the fill. */
+  background: var(--accent-ink, var(--pink));
   transition: width 0.22s ease;
 }
 .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
@@ -384,14 +412,14 @@ button { font-family: inherit; cursor: pointer; }
   letter-spacing: -0.02em;
   line-height: 1;
 }
-.block-head h2 .accent-dot { color: var(--accent, var(--pink)); }
+.block-head h2 .accent-dot { color: var(--accent-ink, var(--pink)); }
 .block-head .see-all {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   white-space: nowrap;
-  border-bottom: 3px solid var(--accent, var(--pink));
+  border-bottom: 3px solid var(--accent-ink, var(--pink));
   padding-bottom: 0.2em;
   transition: background 0.15s;
 }
@@ -434,7 +462,7 @@ button { font-family: inherit; cursor: pointer; }
   letter-spacing: -0.01em;
 }
 .card.lead .card-title { font-size: clamp(1.8rem, 3vw, 2.6rem); }
-.card:hover .card-title { text-decoration: underline; text-decoration-thickness: 3px; text-decoration-color: var(--accent, var(--pink)); text-underline-offset: 4px; }
+.card:hover .card-title { text-decoration: underline; text-decoration-thickness: 3px; text-decoration-color: var(--accent-ink, var(--pink)); text-underline-offset: 4px; }
 .card-dek {
   margin-top: 0.6rem;
   font-family: var(--font-serif);
@@ -455,7 +483,7 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   color: var(--black);
 }
-.card-meta .sep { color: var(--accent, var(--pink)); padding: 0 0.4em; }
+.card-meta .sep { color: var(--accent-ink, var(--pink)); padding: 0 0.4em; }
 
 .card .read-now {
   display: inline-block;
@@ -466,7 +494,7 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   letter-spacing: 0.16em;
   padding-bottom: 0.15em;
-  border-bottom: 3px solid var(--accent, var(--pink));
+  border-bottom: 3px solid var(--accent-ink, var(--pink));
   transition: background 0.15s;
 }
 .card:hover .read-now { background: var(--yellow); }
@@ -574,7 +602,7 @@ button { font-family: inherit; cursor: pointer; }
   border: none;
   font: inherit;
   color: var(--black);
-  border-bottom: 2px solid var(--accent, var(--pink));
+  border-bottom: 2px solid var(--accent-ink, var(--pink));
   padding: 0;
 }
 .link-button:hover { background: var(--yellow); }
@@ -713,7 +741,7 @@ button { font-family: inherit; cursor: pointer; }
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
-.article-byline .accent { color: var(--accent, var(--pink)); }
+.article-byline .accent { color: var(--accent-ink, var(--pink)); }
 
 .share-bar {
   margin-top: 1.5rem;
@@ -771,7 +799,7 @@ button { font-family: inherit; cursor: pointer; }
   float: left;
   line-height: 0.8;
   padding: 0.08em 0.12em 0 0;
-  color: var(--accent, var(--pink));
+  color: var(--accent-ink, var(--pink));
 }
 .article-body h2, .article-body h3 {
   font-family: var(--font-display);
@@ -783,7 +811,7 @@ button { font-family: inherit; cursor: pointer; }
 .article-body h2 { font-size: 1.7rem; }
 .article-body h3 { font-size: 1.25rem; }
 .article-body blockquote {
-  border-left: 6px solid var(--accent, var(--pink));
+  border-left: 6px solid var(--accent-ink, var(--pink));
   padding: 0.4em 0 0.4em 1.2em;
   font-family: var(--font-serif);
   font-style: italic;
@@ -989,8 +1017,8 @@ button { font-family: inherit; cursor: pointer; }
 .btn-ghost:hover { background: var(--yellow); }
 .btn-danger {
   background: var(--white);
-  color: var(--red);
-  border: 2px solid var(--red);
+  color: var(--danger);
+  border: 2px solid var(--danger);
   font-family: var(--font-display);
   font-weight: 700;
   text-transform: uppercase;
@@ -998,10 +1026,10 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 0.8rem;
   padding: 0.8em 1.6em 0.7em;
 }
-.btn-danger:hover { background: var(--red); color: var(--white); }
+.btn-danger:hover { background: var(--danger); color: var(--white); }
 
 .login-error {
-  background: var(--red);
+  background: var(--danger);
   color: var(--white);
   padding: 0.8em 1em;
   font-size: 0.85rem;
@@ -1102,7 +1130,7 @@ button { font-family: inherit; cursor: pointer; }
   object-fit: cover;
 }
 .studio-title-cell { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; line-height: 1.1; font-size: 0.95rem; }
-.studio-title-cell .draft-flag { color: var(--orange); }
+.studio-title-cell .draft-flag { color: var(--draft); }
 
 .status-chip {
   display: inline-block;
@@ -1112,8 +1140,10 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   padding: 0.35em 0.8em 0.25em;
 }
-.status-chip.published { background: var(--green); color: var(--black); }
-.status-chip.draft { background: var(--grey-light); color: var(--grey); }
+/* Black on both, not white — at this size white on orange only reaches 3.3:1,
+   while black clears 6:1 on either colour. */
+.status-chip.published { background: var(--published); color: var(--black); }
+.status-chip.draft { background: var(--draft); color: var(--black); }
 
 .star-btn {
   background: none;
@@ -1137,8 +1167,8 @@ button { font-family: inherit; cursor: pointer; }
   padding: 0.5em 0.9em 0.4em;
 }
 .row-actions a:hover { background: var(--yellow); }
-.row-actions .del { border-color: var(--red); color: var(--red); }
-.row-actions .del:hover { background: var(--red); color: var(--white); }
+.row-actions .del { border-color: var(--danger); color: var(--danger); }
+.row-actions .del:hover { background: var(--danger); color: var(--white); }
 
 .studio-note {
   margin-top: 1.6rem;
@@ -1166,7 +1196,7 @@ button { font-family: inherit; cursor: pointer; }
 .editor-topbar .saved-flash {
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--green);
+  color: var(--published);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -1368,7 +1398,7 @@ button { font-family: inherit; cursor: pointer; }
   line-height: 1.6;
 }
 .design-ok {
-  background: var(--green);
+  background: var(--published);
   color: var(--black);
   padding: 0.8em 1em;
   font-size: 0.85rem;
@@ -1395,6 +1425,9 @@ button { font-family: inherit; cursor: pointer; }
   padding-bottom: 0.5rem;
   margin-bottom: 1.2rem;
 }
+
+/* Sits under a palette's heading and says what that palette is for. */
+.palette-note { margin: -0.6rem 0 1rem; }
 
 .color-row {
   display: grid;
@@ -1435,6 +1468,18 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--white);
 }
 .color-meta span { font-size: 0.7rem; color: var(--grey); line-height: 1.35; }
+/* Section and status swatches aren't renameable — a section's name is the
+   section's name, and "Danger" has to keep meaning danger. Same look as
+   .label-input, minus the affordance to edit it. */
+.color-meta .label-fixed {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--black);
+  padding: 0.15em 0.3em;
+}
 .hex-input {
   border: 2px solid var(--black);
   padding: 0.45em 0.5em;
@@ -1451,6 +1496,20 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .swatch-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.4rem; }
+
+/* Live sample of the status palette, right under the pickers that set it. */
+.status-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--grey-light);
+}
+.status-preview .btn-danger { padding: 0.55em 1.1em 0.45em; font-size: 0.7rem; }
+/* It's a sample, not a button — but it should still look like the real one. */
+.status-preview .btn-danger:disabled { cursor: default; opacity: 1; }
 
 .preview-card { border: 2px solid var(--black); padding: 1.2rem; }
 .preview-card h3 {
@@ -1582,8 +1641,8 @@ button { font-family: inherit; cursor: pointer; }
 }
 .block-actions button:hover:not(:disabled) { background: var(--yellow); }
 .block-actions button:disabled { opacity: 0.3; cursor: not-allowed; }
-.block-actions .del { border-color: var(--red); color: var(--red); }
-.block-actions .del:hover { background: var(--red); color: var(--white); }
+.block-actions .del { border-color: var(--danger); color: var(--danger); }
+.block-actions .del:hover { background: var(--danger); color: var(--white); }
 
 .block-form {
   border-top: 2px dashed var(--grey-light);

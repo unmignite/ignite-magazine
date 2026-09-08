@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sectionOf } from './ArticleCard'
+import { accentVars } from '../data/sections'
 import { useTheme } from '../context/ThemeContext'
 
 // Slide duration is themeable (Studio → Design); the progress bars stay in
@@ -41,9 +42,7 @@ export default function Hero({ articles }) {
         </div>
 
         <div className="hero-copy" key={active.id}>
-          <span className="chip" style={{ background: sec.color, color: sec.slug === 'the-review' ? '#fff' : '#000' }}>
-            {sec.name}
-          </span>
+          <span className="chip" style={accentVars(sec)}>{sec.name}</span>
           <Link className="hero-title display" to={`/article/${active.slug}`}>
             {active.title}
           </Link>

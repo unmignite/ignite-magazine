@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { SECTIONS } from '../data/sections'
+import { SECTIONS, accentVars } from '../data/sections'
 import { useStore } from '../context/StoreContext'
 
 // Every section appears in the top bar — nothing should be reachable only from
@@ -23,7 +23,7 @@ export default function Nav() {
           <nav className="nav-links">
             <NavLink to="/articles" className="nav-all">All</NavLink>
             {links.map((s) => (
-              <NavLink key={s.slug} to={`/section/${s.slug}`} style={{ '--accent': s.color }}>
+              <NavLink key={s.slug} to={`/section/${s.slug}`} style={accentVars(s)}>
                 {s.name}
               </NavLink>
             ))}
@@ -46,7 +46,7 @@ export default function Nav() {
         <div className="mobile-menu" onClick={() => setOpen(false)}>
           <Link to="/articles" style={{ '--accent': 'var(--yellow)' }}>All articles</Link>
           {SECTIONS.map((s) => (
-            <Link key={s.slug} to={`/section/${s.slug}`} style={{ '--accent': s.color }}>
+            <Link key={s.slug} to={`/section/${s.slug}`} style={accentVars(s)}>
               {s.name}
             </Link>
           ))}

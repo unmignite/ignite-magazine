@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
-import { SECTIONS } from '../data/sections'
+import { SECTIONS, accentVars } from '../data/sections'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -89,12 +89,7 @@ export default function Studio() {
                   <Link to={`/article/${a.slug}`}>{a.title}</Link>
                 </td>
                 <td className="hide-sm">
-                  <span
-                    className="chip"
-                    style={{ background: sec?.color, color: sec?.slug === 'the-review' ? '#fff' : '#000' }}
-                  >
-                    {sec?.name}
-                  </span>
+                  <span className="chip" style={accentVars(sec)}>{sec?.name}</span>
                 </td>
                 <td className="hide-sm">{a.author}</td>
                 <td className="hide-sm">{fmtDate(a.date)}</td>

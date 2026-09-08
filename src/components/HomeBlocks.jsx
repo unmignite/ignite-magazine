@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Hero from './Hero'
 import ArticleCard from './ArticleCard'
 import { articlesFor } from '../lib/blocks'
-import { sectionBySlug } from '../data/sections'
+import { sectionBySlug, accentVars } from '../data/sections'
 
 // Renders one homepage block. Every block type in src/lib/blocks.js has a case
 // here; anything unknown renders nothing rather than crashing the page.
@@ -45,7 +45,9 @@ function BlockHead({ block, fallback }) {
   )
 }
 
-const accentFor = (source) => sectionBySlug(source)?.color || 'var(--pink)'
+// A block sourced from "all articles" has no section, so accentVars falls back
+// to the brand accent.
+const accentFor = (source) => accentVars(sectionBySlug(source))
 
 function HeroBlock({ block, articles }) {
   const items = articlesFor(block.source, articles, block.count)
@@ -57,7 +59,7 @@ function LatestBlock({ block, articles }) {
   if (!items.length) return null
   const [lead, ...rest] = items
   return (
-    <section className="section-block" style={{ '--accent': accentFor(block.source) }}>
+    <section className="section-block" style={accentFor(block.source)}>
       <BlockHead block={block} fallback="The Latest" />
       <div className="latest-grid">
         <ArticleCard article={lead} variant="lead" />
@@ -77,7 +79,7 @@ function SectionRowBlock({ block, articles }) {
   return (
     <section
       className="section-block home-section-block"
-      style={{ '--accent': accentFor(block.source) }}
+      style={accentFor(block.source)}
     >
       <BlockHead block={block} fallback="Stories" />
       <div className="grid-3">
@@ -102,7 +104,7 @@ function CarouselBlock({ block, articles }) {
   return (
     <section
       className="section-block home-section-block"
-      style={{ '--accent': accentFor(block.source) }}
+      style={accentFor(block.source)}
     >
       <div className="carousel-head">
         <BlockHead block={block} fallback="Stories" />
