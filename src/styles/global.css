@@ -354,6 +354,92 @@ button { font-family: inherit; cursor: pointer; }
   );
 }
 
+/* ---------- the closing slide ----------
+   The invitation used to be a panel above the footer, where it only worked if
+   you read to the bottom. As the last frame of the reel it lands on everyone,
+   and going from photographs to flat black type is the punctuation. */
+.hero-join {
+  background: var(--black);
+  display: grid;
+  place-items: center;
+  padding: calc(var(--nav-h) + 2rem) var(--pad) 5rem;
+}
+/* No scrim over it — this slide is already black and the gradient would only
+   muddy the type. */
+.hero-join::after { display: none; }
+
+/* Wide enough that each of the three lines holds on one line at desktop sizes —
+   at 1100px "Embrace the unknown." wrapped and the other two didn't. */
+.hero-join-inner { text-align: center; max-width: 1240px; }
+
+.hero-join-lines {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(2rem, 7.2vw, 6rem);
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+}
+.hero-join-lines span { display: block; }
+.hero-join-lines .y { color: var(--yellow); }
+.hero-join-lines .p { color: var(--pink); }
+.hero-join-lines .g { color: var(--green); }
+
+.hero-join-text {
+  margin: clamp(1.2rem, 3vw, 2rem) auto 0;
+  max-width: 520px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  line-height: 1.6;
+  color: rgba(255,255,255,0.75);
+  text-wrap: pretty; /* keeps "we want you." off a line of its own */
+}
+
+.hero-join-btn {
+  display: inline-block;
+  margin-top: clamp(1.6rem, 3.5vw, 2.6rem);
+  background: var(--yellow);
+  color: var(--black);
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  padding: 1em 2.6em 0.9em;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+.hero-join-btn:hover {
+  background: var(--pink);
+  color: var(--white);
+  transform: rotate(-1.5deg) scale(1.04);
+}
+
+/* The lines arrive one after another, so the slide reads as three beats rather
+   than one wall of type. Only on the active slide — otherwise they animate
+   out of sight while the reel is elsewhere. */
+.hero-join.active .hero-join-lines span,
+.hero-join.active .hero-join-text,
+.hero-join.active .hero-join-btn {
+  animation: hero-join-in 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+}
+.hero-join.active .hero-join-lines span:nth-child(1) { animation-delay: 0.10s; }
+.hero-join.active .hero-join-lines span:nth-child(2) { animation-delay: 0.22s; }
+.hero-join.active .hero-join-lines span:nth-child(3) { animation-delay: 0.34s; }
+.hero-join.active .hero-join-text { animation-delay: 0.48s; }
+.hero-join.active .hero-join-btn { animation-delay: 0.60s; }
+
+@keyframes hero-join-in {
+  from { opacity: 0; transform: translateY(0.5em); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-join.active .hero-join-lines span,
+  .hero-join.active .hero-join-text,
+  .hero-join.active .hero-join-btn { animation: none; }
+}
+
 .hero-copy {
   position: absolute;
   left: var(--pad);
@@ -1762,6 +1848,14 @@ button { font-family: inherit; cursor: pointer; }
 .block-form .field { margin-bottom: 0; }
 /* The slot picker is a list, not a form control — give it the full row. */
 .block-form .field-wide { grid-column: 1 / -1; }
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+.toggle-row input { width: 18px; height: 18px; accent-color: var(--pink); flex: none; }
 
 .slot-list {
   display: grid;

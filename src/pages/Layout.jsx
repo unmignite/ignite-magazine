@@ -209,6 +209,21 @@ function BlockField({ field, value, onChange, block, articles }) {
     )
   }
 
+  if (field.type === 'toggle') {
+    return (
+      <div className="field">
+        <label className="toggle-row">
+          <input
+            type="checkbox"
+            checked={value !== false}
+            onChange={(e) => onChange(e.target.checked)}
+          />
+          <span>{field.label}</span>
+        </label>
+      </div>
+    )
+  }
+
   if (field.type === 'number') {
     return (
       <div className="field">

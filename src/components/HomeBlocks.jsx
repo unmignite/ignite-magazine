@@ -51,7 +51,8 @@ const accentFor = (source) => accentVars(sectionBySlug(source))
 
 function HeroBlock({ block, articles }) {
   const items = articlesFor(block.source, articles, block.count)
-  return <Hero articles={items} />
+  // The whole block goes through: the hero needs the join-slide copy too.
+  return <Hero articles={items} block={block} />
 }
 
 // One big story flanked by a column either side. Columns that come back empty

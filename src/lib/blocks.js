@@ -20,10 +20,22 @@ export const SOURCE_CHOICES = [
 export const BLOCK_TYPES = {
   hero: {
     label: 'Hero carousel',
-    blurb: 'Full-screen covers that auto-advance. The A24-style landing.',
+    blurb: 'Full-screen covers that auto-advance, closing on the invitation to join.',
     fields: [
       { key: 'source', label: 'Show', type: 'source', default: 'featured' },
-      { key: 'count', label: 'How many slides', type: 'number', min: 2, max: 12, default: 6 },
+      { key: 'count', label: 'How many story slides', type: 'number', min: 2, max: 12, default: 6 },
+      { key: 'join', label: 'Close on a join slide', type: 'toggle', default: true },
+      { key: 'joinLine1', label: 'Join slide — line 1', type: 'text', default: 'Embrace the unknown.' },
+      { key: 'joinLine2', label: 'Join slide — line 2', type: 'text', default: 'Explore the unseen.' },
+      { key: 'joinLine3', label: 'Join slide — line 3', type: 'text', default: 'Discover the unheard.' },
+      {
+        key: 'joinText',
+        label: 'Join slide — supporting text',
+        type: 'textarea',
+        default: 'Ignite is written, shot, edited and designed by students of the University of Nottingham Malaysia. Writers, photographers, designers — we want you.',
+      },
+      { key: 'joinLabel', label: 'Join slide — button', type: 'text', default: 'Join Ignite' },
+      { key: 'joinUrl', label: 'Join slide — button link', type: 'text', default: 'https://www.instagram.com/unm_ignite/' },
     ],
   },
   latest: {
@@ -109,16 +121,9 @@ export const DEFAULT_HOMEPAGE = [
   { id: 'd3', type: 'section-row', source: 'music', count: 3, heading: '' },
   { id: 'd4', type: 'section-row', source: 'film-tv', count: 3, heading: '' },
   { id: 'd5', type: 'section-row', source: 'beauty-style', count: 3, heading: '' },
-  {
-    id: 'd6',
-    type: 'banner',
-    line1: 'Embrace the unknown.',
-    line2: 'Explore the unseen.',
-    line3: 'Discover the unheard.',
-    text: 'Ignite is written, shot, edited and designed by students of the University of Nottingham Malaysia. Writers, photographers, designers — we want you.',
-    buttonLabel: 'Join Ignite',
-    buttonUrl: 'https://www.instagram.com/unm_ignite/',
-  },
+  // No closing banner: the invitation to join is the last slide of the hero
+  // now, so it opens the page rather than waiting at the bottom of it. The
+  // banner block type is still there for anyone who wants one mid-page.
 ]
 
 // --- showcase slots ---------------------------------------------------------
