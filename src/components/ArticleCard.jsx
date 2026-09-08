@@ -10,7 +10,14 @@ export function sectionOf(article) {
 
 export default function ArticleCard({ article, variant = 'grid' }) {
   const sec = sectionOf(article)
-  const cls = variant === 'lead' ? 'card lead' : variant === 'row' ? 'card card-row' : 'card'
+  // `stack` is the showcase's left column: a full-width image with just a kicker,
+  // headline and byline under it — no dek, no call to action. Dense enough to
+  // hold a column on its own without turning into a wall of text.
+  const cls =
+    variant === 'lead' ? 'card lead'
+    : variant === 'row' ? 'card card-row'
+    : variant === 'stack' ? 'card card-stack'
+    : 'card'
 
   return (
     <Link to={`/article/${article.slug}`} className={cls} style={accentVars(sec)}>
@@ -28,7 +35,7 @@ export default function ArticleCard({ article, variant = 'grid' }) {
           <span className="sep">✦</span>
           {fmtDate(article.date)}
         </p>
-        {variant !== 'row' && <span className="read-now">Read now →</span>}
+        {(variant === 'lead' || variant === 'grid') && <span className="read-now">Read now →</span>}
       </div>
     </Link>
   )

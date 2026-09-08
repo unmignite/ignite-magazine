@@ -66,16 +66,23 @@ function LatestBlock({ block, articles }) {
   const centre = filled.find((s) => s.side === 'center')
 
   // Passed as a custom property, not grid-template-columns itself, so the
-  // mobile breakpoint can still collapse it to one column.
-  const cols = [left.length && '1fr', centre && '1.7fr', right.length && '1fr']
+  // mobile breakpoint can still collapse it to one column. The right column is
+  // wider than the left because its rows carry a thumbnail beside the text.
+  const cols = [left.length && '1fr', centre && '1.8fr', right.length && '1.2fr']
     .filter(Boolean)
     .join(' ')
 
+  // The two sides are deliberately different weights: large cards on the left,
+  // a compact list on the right.
   const column = (slots, side) =>
     slots.length > 0 && (
       <div className={`showcase-col side ${side}`}>
         {slots.map((s) => (
-          <ArticleCard key={s.article.id} article={s.article} variant="row" />
+          <ArticleCard
+            key={s.article.id}
+            article={s.article}
+            variant={side === 'left' ? 'stack' : 'row'}
+          />
         ))}
       </div>
     )

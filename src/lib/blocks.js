@@ -28,12 +28,12 @@ export const BLOCK_TYPES = {
   },
   latest: {
     label: 'Latest — showcase',
-    blurb: 'One big story in the middle with a column of smaller ones either side.',
+    blurb: 'Large cards, one big story in the middle, and a list down the right.',
     fields: [
       { key: 'heading', label: 'Heading', type: 'text', default: 'The Latest' },
       { key: 'source', label: 'Fill empty slots from', type: 'source', default: 'latest' },
-      { key: 'left', label: 'Stories down the left', type: 'number', min: 1, max: 5, default: 3 },
-      { key: 'right', label: 'Stories down the right', type: 'number', min: 1, max: 5, default: 2 },
+      { key: 'left', label: 'Large cards on the left', type: 'number', min: 1, max: 4, default: 2 },
+      { key: 'right', label: 'List items on the right', type: 'number', min: 1, max: 8, default: 5 },
       { key: 'picks', label: 'Which story goes where', type: 'picks', default: {} },
     ],
     summary: (b) => `${sourceLabel(b.source)} · ${slotCount(b)} articles`,
@@ -105,7 +105,7 @@ export const withDefaults = (block) => {
 // homepage, so an untouched install looks exactly as designed.
 export const DEFAULT_HOMEPAGE = [
   { id: 'd1', type: 'hero', source: 'featured', count: 6 },
-  { id: 'd2', type: 'latest', heading: 'The Latest', source: 'latest', left: 3, right: 2, picks: {} },
+  { id: 'd2', type: 'latest', heading: 'The Latest', source: 'latest', left: 2, right: 5, picks: {} },
   { id: 'd3', type: 'section-row', source: 'music', count: 3, heading: '' },
   { id: 'd4', type: 'section-row', source: 'film-tv', count: 3, heading: '' },
   { id: 'd5', type: 'section-row', source: 'beauty-style', count: 3, heading: '' },
@@ -133,9 +133,11 @@ const SIDES = ['left', 'right']
 // Slots in reading order: down the left, the big one, then down the right.
 export function slotsFor(block) {
   const side = (name) =>
-    Array.from({ length: block[name] ?? (name === 'left' ? 3 : 2) }, (_, i) => ({
+    Array.from({ length: block[name] ?? (name === 'left' ? 2 : 5) }, (_, i) => ({
       key: `${name}-${i}`,
-      label: `${name === 'left' ? 'Left' : 'Right'} ${i + 1}`,
+      // Named by treatment as well as position — the two columns don't look
+      // alike, so "Left 1" alone doesn't tell you what you're choosing.
+      label: `${name === 'left' ? 'Large' : 'List'} ${i + 1}`,
       side: name,
     }))
   return [...side(SIDES[0]), { key: 'center', label: 'Centre — the big one', side: 'center' }, ...side(SIDES[1])]

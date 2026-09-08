@@ -425,42 +425,49 @@ button { font-family: inherit; cursor: pointer; }
 }
 .block-head .see-all:hover { background: var(--yellow); }
 
-/* showcase: a column of small stories, one big one, another column.
+/* showcase — three columns, three different weights.
+   Left: a couple of large cards, images at full column width.
+   Centre: the big portrait.
+   Right: a compact list, headline first and the thumbnail on the outside.
+   The columns are meant to end at different heights — that raggedness is fine
+   as long as each one is dense. What doesn't work is a column whose content is
+   too small for its width, which is all a run of white space really is.
+
    --cols is set per block in HomeBlocks.jsx so an empty column can be dropped
    without leaving a gap; the fallback covers the full three-column case. */
 .showcase-grid {
   display: grid;
-  grid-template-columns: var(--cols, 1fr 1.7fr 1fr);
-  gap: clamp(1.5rem, 3vw, 2.8rem);
+  grid-template-columns: var(--cols, 1fr 1.8fr 1.2fr);
+  gap: clamp(1.5rem, 2.6vw, 2.4rem);
+  align-items: start;
 }
-/* Three short rows can't fill the height of the big story, so the slack has to
-   go somewhere. Centred splits it evenly above and below and reads as framing;
-   pushed to the top it pools into one hole at the bottom, and space-between
-   scatters the rows with 200px between them. */
-.showcase-col.side {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.4rem;
-}
-.showcase-col.side .card-row {
-  grid-template-columns: 110px 1fr;
+.showcase-col.side { display: flex; flex-direction: column; }
+
+/* Left — large cards, the whole column wide. */
+.showcase-col.left { gap: clamp(1.4rem, 2vw, 2rem); }
+.showcase-col.left .card-img { aspect-ratio: 4 / 3; }
+.showcase-col.left .card-title { font-size: 1.2rem; }
+
+/* Right — a list. Headline reads first, thumbnail sits on the outside edge so
+   the big story is framed by text rather than boxed in by pictures. */
+.showcase-col.right .card-row {
+  grid-template-columns: 1fr 96px;
   gap: 1rem;
-  padding: 0 0 1rem;
+  padding: 0 0 1.15rem;
+  margin-bottom: 1.15rem;
 }
-.showcase-col.side .card-row:last-child { border-bottom: none; padding-bottom: 0; }
-.showcase-col.side .card-title { font-size: 1rem; }
+.showcase-col.right .card-row .card-img { order: 2; }
+.showcase-col.right .card-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.showcase-col.right .card-title { font-size: 1rem; }
 
-/* The right-hand column mirrors, so both sets of thumbnails sit on the
-   outside edges and the big story is framed by text. */
-.showcase-col.side.right .card-row { grid-template-columns: 1fr 110px; }
-.showcase-col.side.right .card-row .card-img { order: 2; }
-
-/* Portrait centre image — the shape both reference layouts use — but capped,
-   because at 4:5 a wide centre column runs to nearly 700px on its own and
-   towers over the side columns. */
-.showcase-col.centre .card-img { aspect-ratio: 4 / 5; max-height: 500px; }
-.showcase-col.centre .card-title { font-size: clamp(1.5rem, 2.4vw, 2.2rem); }
+/* Portrait centre — the shape both reference layouts use — capped so the block
+   doesn't run away from the columns beside it. */
+.showcase-col.centre .card-img { aspect-ratio: 4 / 5; max-height: 560px; }
+.showcase-col.centre .card-title { font-size: clamp(1.5rem, 2.3vw, 2.1rem); }
 
 /* generic card */
 .card { display: block; }
@@ -1922,12 +1929,17 @@ button { font-family: inherit; cursor: pointer; }
   .showcase-col.centre .card-img { aspect-ratio: 16 / 10; }
   /* Stacked, the mirroring has nothing to mirror against — put every
      thumbnail back on the left and restore the divider between columns. */
-  .showcase-col.side.right .card-row { grid-template-columns: 110px 1fr; }
-  .showcase-col.side.right .card-row .card-img { order: 0; }
-  .showcase-col.side .card-row:last-child {
+  .showcase-col.right .card-row { grid-template-columns: 96px 1fr; }
+  .showcase-col.right .card-row .card-img { order: 0; }
+  .showcase-col.right .card-row:last-child {
     border-bottom: 1px solid var(--grey-light);
-    padding-bottom: 1rem;
+    padding-bottom: 1.1rem;
+    margin-bottom: 1.1rem;
   }
+  /* Full column width now, so the portrait crops become enormous — 4:3 across
+     813px is a 610px-tall thumbnail. Back to the site's usual card ratio. */
+  .showcase-col.left { gap: 2rem; }
+  .showcase-col.left .card-img { aspect-ratio: 16 / 10; }
 }
 
 @media (max-width: 860px) {
