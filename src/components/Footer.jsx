@@ -13,8 +13,10 @@ export default function Footer() {
         </div>
         <div>
           <h4>Sections</h4>
-          <ul>
-            {SECTIONS.slice(0, 5).map((s) => (
+          {/* Every section, however many there are — the list splits into two
+              columns rather than spilling half of them under another heading. */}
+          <ul className="footer-sections">
+            {SECTIONS.map((s) => (
               <li key={s.slug}><Link to={`/section/${s.slug}`}>{s.name}</Link></li>
             ))}
           </ul>
@@ -22,9 +24,6 @@ export default function Footer() {
         <div>
           <h4>More</h4>
           <ul>
-            {SECTIONS.slice(5).map((s) => (
-              <li key={s.slug}><Link to={`/section/${s.slug}`}>{s.name}</Link></li>
-            ))}
             <li><Link to="/articles">All articles</Link></li>
             <li><Link to="/faqs">FAQs</Link></li>
             <li><Link to="/login">Editor login</Link></li>
