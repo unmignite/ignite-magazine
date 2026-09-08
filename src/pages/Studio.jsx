@@ -1,25 +1,38 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import { SECTIONS, accentVars } from '../data/sections'
+import { useArticleSearch } from '../components/ArticleSearch'
+import { mustReadReady } from '../lib/supabase'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 
 export default function Studio() {
-  const { articles, user, loading, error, deleteArticle, toggleFeatured } = useStore()
-  const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState('all')
+  const { articles, user, loading, error, deleteArticle, toggleFeatured, toggleMustRead } = useStore()
+  const [status, setStatus] = useState('all')
+  const [marked, setMarked] = useState('all')
   const [notice, setNotice] = useState('')
+  const [busyId, setBusyId] = useState(null)
 
-  const shown = articles
-    .filter((a) => (filter === 'all' ? true : a.status === filter))
-    .filter((a) => {
-      const q = query.toLowerCase()
-      return !q || a.title.toLowerCase().includes(q) || a.author.toLowerCase().includes(q)
-    })
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+  const canMark = mustReadReady()
+
+  // The same search the readers get — title, writer, tag, section, sort — fed
+  // the whole list so the dropdowns stay complete whatever else is filtered.
+  const search = useArticleSearch(articles)
+
+  // Status and Must Read are staff-only, so they sit on top rather than inside
+  // the shared hook.
+  const shown = useMemo(
+    () =>
+      search.filtered
+        .filter((a) => status === 'all' || a.status === status)
+        .filter((a) =>
+          marked === 'all' ? true : marked === 'yes' ? a.mustRead : !a.mustRead
+        ),
+    [search.filtered, status, marked]
+  )
 
   const handleDelete = async (a) => {
     if (!window.confirm(`Delete “${a.title}”? This cannot be undone.`)) return
@@ -32,6 +45,22 @@ export default function Studio() {
     if (!res.ok) setNotice(res.error)
   }
 
+  // Marking is a round trip, so lock the one box being changed rather than
+  // letting a fast run of clicks race each other.
+  const handleMustRead = async (a) => {
+    setBusyId(a.id)
+    const res = await toggleMustRead(a.id)
+    setBusyId(null)
+    if (!res.ok) setNotice(res.error)
+  }
+
+  const reset = () => {
+    search.clear()
+    setStatus('all')
+    setMarked('all')
+  }
+  const filtering = search.isFiltering || status !== 'all' || marked !== 'all'
+
   return (
     <div className="studio">
       <div className="studio-head">
@@ -39,24 +68,81 @@ export default function Studio() {
           The Studio<em>.</em>
         </h1>
         <div className="studio-tools">
-          <input
-            type="search"
-            placeholder="Search title or author…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <div className="filter">
-            {['all', 'published', 'draft'].map((f) => (
-              <button key={f} className={filter === f ? 'on' : ''} onClick={() => setFilter(f)}>
-                {f}
-              </button>
-            ))}
-          </div>
           <Link to="/studio/new" className="btn-primary" style={{ textDecoration: 'none' }}>
             + New article
           </Link>
         </div>
       </div>
+
+      <div className="studio-filters">
+        <input
+          className="studio-search"
+          type="search"
+          placeholder="Search title, writer or tag…"
+          value={search.query}
+          onChange={(e) => search.setQuery(e.target.value)}
+          aria-label="Search articles"
+        />
+
+        <label className="studio-filter">
+          <span>Section</span>
+          <select value={search.section} onChange={(e) => search.setSection(e.target.value)}>
+            <option value="">All sections</option>
+            {SECTIONS.map((s) => (
+              <option key={s.slug} value={s.slug}>{s.name}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="studio-filter">
+          <span>Writer</span>
+          <select value={search.author} onChange={(e) => search.setAuthor(e.target.value)}>
+            <option value="">All writers</option>
+            {search.authors.map((a) => (
+              <option key={a} value={a}>{a}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="studio-filter">
+          <span>Status</span>
+          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option value="all">All</option>
+            <option value="published">Published</option>
+            <option value="draft">Drafts</option>
+          </select>
+        </label>
+
+        {canMark && (
+          <label className="studio-filter">
+            <span>Must Read</span>
+            <select value={marked} onChange={(e) => setMarked(e.target.value)}>
+              <option value="all">All</option>
+              <option value="yes">Marked</option>
+              <option value="no">Not marked</option>
+            </select>
+          </label>
+        )}
+
+        <label className="studio-filter">
+          <span>Sort</span>
+          <select value={search.sort} onChange={(e) => search.setSort(e.target.value)}>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="az">Title A–Z</option>
+          </select>
+        </label>
+
+        {filtering && (
+          <button className="clear-filters" onClick={reset}>Clear</button>
+        )}
+      </div>
+
+      {filtering && !loading && (
+        <p className="studio-count">
+          {shown.length} of {articles.length} articles
+        </p>
+      )}
 
       {(notice || error) && (
         <div className="login-error" style={{ marginBottom: '1.2rem' }}>
@@ -74,6 +160,7 @@ export default function Studio() {
             <th className="hide-sm">Date</th>
             <th>Status</th>
             <th title="Featured in the landing carousel">★</th>
+            {canMark && <th title="Shown in this section's Must Read strip">Must&nbsp;read</th>}
             <th></th>
           </tr>
         </thead>
@@ -106,6 +193,19 @@ export default function Studio() {
                     ★
                   </button>
                 </td>
+                {canMark && (
+                  <td>
+                    <input
+                      type="checkbox"
+                      className="must-read-check"
+                      checked={a.mustRead}
+                      disabled={busyId === a.id}
+                      onChange={() => handleMustRead(a)}
+                      aria-label={`Must Read in ${sec?.name || 'its section'}`}
+                      title={`Show in the ${sec?.name || 'section'} Must Read strip`}
+                    />
+                  </td>
+                )}
                 <td>
                   <div className="row-actions">
                     <Link to={`/studio/edit/${a.id}`}>Edit</Link>

@@ -13,7 +13,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import { SECTIONS } from '../data/sections'
-import { uploadImage, mustReadReady } from '../lib/supabase'
+import { uploadImage } from '../lib/supabase'
 import NotFound from './NotFound'
 
 const PALETTE = [
@@ -186,7 +186,6 @@ function EditorForm({ existing }) {
   const [coverCredit, setCoverCredit] = useState(existing?.coverCredit || '')
   const [tags, setTags] = useState((existing?.tags || []).join(', '))
   const [featured, setFeatured] = useState(existing?.featured || false)
-  const [mustRead, setMustRead] = useState(existing?.mustRead || false)
   const [status, setStatus] = useState(existing?.status || 'draft')
   const [savedFlash, setSavedFlash] = useState(false)
   const [saveError, setSaveError] = useState('')
@@ -246,7 +245,8 @@ function EditorForm({ existing }) {
       coverCredit: coverCredit.trim(),
       tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
       featured: can(user, 'feature') ? featured : existing?.featured || false,
-      mustRead,
+      // Carried through untouched — it's toggled from the Studio list.
+      mustRead: existing?.mustRead || false,
       status,
       credits: existing?.credits || { writer: author.trim() || user.name, editor: user.name, chief: '' },
       body: editor.getHTML(),
@@ -377,20 +377,9 @@ function EditorForm({ existing }) {
             Feature in the landing carousel
           </label>
 
-          {/* Section-level curation, so no admin gate — an editor looking after
-              Music shouldn't need the Web Manager to promote a Music piece.
-              Hidden until supabase/must-read.sql has been run, so nobody ticks
-              a box that has nowhere to save to. */}
-          {mustReadReady() && (
-            <label className="check-row">
-              <input
-                type="checkbox"
-                checked={mustRead}
-                onChange={(e) => setMustRead(e.target.checked)}
-              />
-              Must Read in {SECTIONS.find((s) => s.slug === section)?.name || 'its section'}
-            </label>
-          )}
+          {/* Must Read is ticked in the Studio list, not here — it's a call you
+              make comparing a section's articles against each other, which
+              means seeing them side by side. */}
 
           <div className="meta-actions">
             <button className="btn-primary" onClick={save} disabled={busy}>

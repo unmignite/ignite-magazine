@@ -1360,13 +1360,8 @@ button { font-family: inherit; cursor: pointer; }
 .studio-head h1 em { font-style: normal; color: var(--pink); }
 
 .studio-tools { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
-.studio-tools input[type="search"] {
-  border: 2px solid var(--black);
-  padding: 0.7em 1em;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  min-width: 220px;
-}
+
+/* Segmented button group — the Analytics page's date range. */
 .studio-tools .filter { display: flex; border: 2px solid var(--black); }
 .studio-tools .filter button {
   background: var(--white);
@@ -1378,6 +1373,59 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
 }
 .studio-tools .filter button.on { background: var(--black); color: var(--white); }
+
+/* One row of controls above the table: search, then a labelled dropdown each
+   for section, writer, status, Must Read and sort. Going through 138 articles
+   marking a section's picks means narrowing to that section first. */
+.studio-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--grey-light);
+}
+.studio-search {
+  flex: 1 1 240px;
+  border: 2px solid var(--black);
+  padding: 0.6em 0.9em;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  min-width: 200px;
+}
+.studio-filter { display: flex; flex-direction: column; gap: 0.3rem; }
+.studio-filter span {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.studio-filter select {
+  border: 2px solid var(--black);
+  background: var(--white);
+  padding: 0.55em 0.7em;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+}
+.studio-count {
+  margin: -0.4rem 0 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* Big enough to hit repeatedly without aiming — this is the control you use
+   over and over when curating a section. */
+.must-read-check {
+  width: 20px; height: 20px;
+  accent-color: var(--black);
+  cursor: pointer;
+}
+.must-read-check:disabled { cursor: wait; opacity: 0.5; }
 
 .studio-table { width: 100%; border-collapse: collapse; }
 .studio-table th {

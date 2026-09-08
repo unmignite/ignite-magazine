@@ -166,6 +166,25 @@ export function StoreProvider({ children }) {
       setArticles((prev) => prev.map((a) => (a.id === saved.id ? saved : a)))
       return { ok: true }
     },
+
+    // Section-level curation — no trigger guarding it, so any editor can mark
+    // a piece in their own section without going through the Web Manager.
+    async toggleMustRead(id) {
+      const current = articles.find((a) => a.id === id)
+      if (!current) return { ok: false, error: 'Article not found.' }
+
+      const { data, error: err } = await supabase
+        .from('articles')
+        .update({ must_read: !current.mustRead })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (err) return { ok: false, error: err.message }
+      const saved = rowToArticle(data)
+      setArticles((prev) => prev.map((a) => (a.id === saved.id ? saved : a)))
+      return { ok: true }
+    },
   }), [articles, user, loading, error, refresh])
 
   if (!isSupabaseConfigured) return <SetupNotice />
