@@ -4,6 +4,7 @@ import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import { SECTIONS, accentVars } from '../data/sections'
 import { useArticleSearch } from '../components/ArticleSearch'
+import { MUST_READ_MAX } from '../components/MustRead'
 import { mustReadReady } from '../lib/supabase'
 
 const fmtDate = (d) =>
@@ -21,6 +22,17 @@ export default function Studio() {
   // The same search the readers get — title, writer, tag, section, sort — fed
   // the whole list so the dropdowns stay complete whatever else is filtered.
   const search = useArticleSearch(articles)
+
+  // How many are marked in each section, counted across every article rather
+  // than the filtered view — the cap is a property of the section, not of
+  // whatever happens to be on screen.
+  const markedBySection = useMemo(() => {
+    const counts = {}
+    for (const a of articles) {
+      if (a.mustRead) counts[a.section] = (counts[a.section] || 0) + 1
+    }
+    return counts
+  }, [articles])
 
   // Status and Must Read are staff-only, so they sit on top rather than inside
   // the shared hook.
@@ -138,9 +150,17 @@ export default function Studio() {
         )}
       </div>
 
-      {filtering && !loading && (
+      {!loading && (filtering || (canMark && search.section)) && (
         <p className="studio-count">
-          {shown.length} of {articles.length} articles
+          {filtering && <span>{shown.length} of {articles.length} articles</span>}
+          {/* Says why a checkbox has gone flat, rather than leaving it a
+              mystery that only a hover reveals. */}
+          {canMark && search.section && (
+            <span>
+              {SECTIONS.find((s) => s.slug === search.section)?.name} Must Reads:{' '}
+              {markedBySection[search.section] || 0} of {MUST_READ_MAX} used
+            </span>
+          )}
         </p>
       )}
 
@@ -193,19 +213,29 @@ export default function Studio() {
                     ★
                   </button>
                 </td>
-                {canMark && (
-                  <td>
-                    <input
-                      type="checkbox"
-                      className="must-read-check"
-                      checked={a.mustRead}
-                      disabled={busyId === a.id}
-                      onChange={() => handleMustRead(a)}
-                      aria-label={`Must Read in ${sec?.name || 'its section'}`}
-                      title={`Show in the ${sec?.name || 'section'} Must Read strip`}
-                    />
-                  </td>
-                )}
+                {canMark && (() => {
+                  // Unticking is always allowed; it's only adding a fifth that
+                  // the section has no room for.
+                  const full =
+                    !a.mustRead && (markedBySection[a.section] || 0) >= MUST_READ_MAX
+                  return (
+                    <td>
+                      <input
+                        type="checkbox"
+                        className="must-read-check"
+                        checked={a.mustRead}
+                        disabled={busyId === a.id || full}
+                        onChange={() => handleMustRead(a)}
+                        aria-label={`Must Read in ${sec?.name || 'its section'}`}
+                        title={
+                          full
+                            ? `${sec?.name || 'This section'} already has ${MUST_READ_MAX} — untick one first`
+                            : `Show in the ${sec?.name || 'section'} Must Read strip`
+                        }
+                      />
+                    </td>
+                  )
+                })()}
                 <td>
                   <div className="row-actions">
                     <Link to={`/studio/edit/${a.id}`}>Edit</Link>

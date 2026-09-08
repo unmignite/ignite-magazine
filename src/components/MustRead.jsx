@@ -11,7 +11,12 @@ const fmtDate = (d) =>
 // shows until someone does, which is deliberate: a strip headed MUST READ that
 // quietly filled itself with the newest articles would be claiming an
 // editorial judgement nobody made, and those are already listed below it.
-export default function MustRead({ articles, limit = 4 }) {
+// Four across the band at desktop width. The Studio enforces the same number
+// when marking, so what an editor ticks is exactly what appears — a fifth would
+// silently never show up.
+export const MUST_READ_MAX = 4
+
+export default function MustRead({ articles, limit = MUST_READ_MAX }) {
   const picks = articles.filter((a) => a.mustRead && a.status === 'published').slice(0, limit)
   if (!picks.length) return null
 
