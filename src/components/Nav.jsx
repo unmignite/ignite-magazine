@@ -78,6 +78,9 @@ export default function Nav() {
           </nav>
           <nav className="nav-menu-minor">
             <NavLink to="/faqs">FAQs</NavLink>
+            {/* Contact is the footer, on whatever page you're already on — a
+                plain hash link rather than a route, so there's nothing to load. */}
+            <a href="#contact">Contact</a>
             <NavLink to={user ? '/studio' : '/login'}>{user ? 'Studio' : 'Log in'}</NavLink>
           </nav>
         </div>

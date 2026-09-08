@@ -82,9 +82,13 @@ export default function Faqs() {
               className="btn-ghost"
               href="mailto:unmignite@gmail.com"
               onClick={() => {
-                navigator.clipboard?.writeText('unmignite@gmail.com').catch(() => {})
-                setCopied(true)
-                setTimeout(() => setCopied(false), 3000)
+                // Only claim it was copied once the write actually resolves.
+                navigator.clipboard?.writeText('unmignite@gmail.com')
+                  .then(() => {
+                    setCopied(true)
+                    setTimeout(() => setCopied(false), 3000)
+                  })
+                  .catch(() => {})
               }}
             >
               {copied ? 'Copied ✓' : 'unmignite@gmail.com'}

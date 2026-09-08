@@ -991,14 +991,29 @@ button { font-family: inherit; cursor: pointer; }
 /* Multi-column rather than a grid so the sections fill downwards — first half
    in the left column, second in the right — instead of reading across. */
 .footer-sections { columns: 2; column-gap: 1.5rem; }
-.footer .tagline {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 1.1rem;
-  color: rgba(255,255,255,0.7);
-  max-width: 380px;
-  line-height: 1.6;
+/* Contact lives in the footer rather than on a page of its own — three lines
+   of address and two links don't need a route, and this way it's reachable
+   from the bottom of every page. */
+/* Jumped to from the menu and from More, so keep it clear of the sticky bar. */
+.footer-contact { max-width: 340px; scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
+.footer-contact address {
+  font-style: normal;
+  font-size: 0.85rem;
+  line-height: 1.85;
+  color: rgba(255,255,255,0.8);
 }
+.footer-contact a {
+  display: block;
+  margin-top: 0.9rem;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.8);
+  width: fit-content;
+  border-bottom: 2px solid rgba(255,255,255,0.3);
+  padding-bottom: 0.1em;
+  transition: color 0.15s, border-color 0.15s;
+}
+.footer-contact a:hover { color: var(--yellow); border-bottom-color: var(--yellow); }
+
 .footer h4 {
   font-size: 0.68rem;
   font-weight: 700;
@@ -1011,21 +1026,6 @@ button { font-family: inherit; cursor: pointer; }
 .footer li a { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
 .footer li a:hover { color: var(--pink); }
 
-.footer-mark {
-  font-family: var(--font-display);
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: clamp(4rem, 18vw, 15rem);
-  line-height: 0.8;
-  letter-spacing: -0.03em;
-  color: transparent;
-  -webkit-text-stroke: 2px rgba(255,255,255,0.28);
-  text-align: center;
-  user-select: none;
-  margin-top: 1rem;
-  transition: color 0.4s;
-}
-.footer-mark:hover { color: var(--yellow); -webkit-text-stroke: 2px var(--yellow); }
 .footer-legal {
   display: flex;
   justify-content: space-between;
