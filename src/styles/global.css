@@ -464,9 +464,18 @@ button { font-family: inherit; cursor: pointer; }
 }
 .showcase-col.right .card-title { font-size: 1rem; }
 
-/* Portrait centre — the shape both reference layouts use — capped so the block
-   doesn't run away from the columns beside it. */
-.showcase-col.centre .card-img { aspect-ratio: 4 / 5; max-height: 560px; }
+/* Portrait centre — the shape both reference layouts use.
+   Height is set directly rather than as aspect-ratio + max-height: when
+   max-height clamps a box that has an aspect-ratio, the browser narrows the
+   WIDTH to keep the ratio. On a 1850px screen that left the "big" story's
+   image 448px wide inside a 741px column — dead space beside it, and no wider
+   than the small cards on the left. Sizing by height keeps it full column
+   width at every size, and the clamp keeps it portrait from the 1080px
+   breakpoint up to the widest monitor. */
+.showcase-col.centre .card-img {
+  aspect-ratio: auto;
+  height: clamp(440px, 46vw, 820px);
+}
 .showcase-col.centre .card-title { font-size: clamp(1.5rem, 2.3vw, 2.1rem); }
 
 /* generic card */
@@ -1926,7 +1935,9 @@ button { font-family: inherit; cursor: pointer; }
      lists follow it, so the page still opens on the strongest image. */
   .showcase-grid { grid-template-columns: 1fr; }
   .showcase-col.centre { order: -1; }
-  .showcase-col.centre .card-img { aspect-ratio: 16 / 10; }
+  /* height: auto hands sizing back to the ratio — the base rule drives the
+     centre image by height, which would otherwise survive into stacked mode. */
+  .showcase-col.centre .card-img { aspect-ratio: 16 / 10; height: auto; }
   /* Stacked, the mirroring has nothing to mirror against — put every
      thumbnail back on the left and restore the divider between columns. */
   .showcase-col.right .card-row { grid-template-columns: 96px 1fr; }
