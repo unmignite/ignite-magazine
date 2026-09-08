@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Hero from './Hero'
 import ArticleCard from './ArticleCard'
-import { articlesFor } from '../lib/blocks'
+import { articlesFor, resolveSlots } from '../lib/blocks'
 import { sectionBySlug, accentVars } from '../data/sections'
 
 // Renders one homepage block. Every block type in src/lib/blocks.js has a case
@@ -54,20 +54,43 @@ function HeroBlock({ block, articles }) {
   return <Hero articles={items} />
 }
 
+// One big story flanked by a column either side. Columns that come back empty
+// (a very small site, or a section with three articles in it) are dropped
+// rather than left as a gap, and the grid is sized from what actually renders.
 function LatestBlock({ block, articles }) {
-  const items = articlesFor(block.source, articles, block.count)
-  if (!items.length) return null
-  const [lead, ...rest] = items
+  const filled = resolveSlots(block, articles).filter((s) => s.article)
+  if (!filled.length) return null
+
+  const left = filled.filter((s) => s.side === 'left')
+  const right = filled.filter((s) => s.side === 'right')
+  const centre = filled.find((s) => s.side === 'center')
+
+  // Passed as a custom property, not grid-template-columns itself, so the
+  // mobile breakpoint can still collapse it to one column.
+  const cols = [left.length && '1fr', centre && '1.7fr', right.length && '1fr']
+    .filter(Boolean)
+    .join(' ')
+
+  const column = (slots, side) =>
+    slots.length > 0 && (
+      <div className={`showcase-col side ${side}`}>
+        {slots.map((s) => (
+          <ArticleCard key={s.article.id} article={s.article} variant="row" />
+        ))}
+      </div>
+    )
+
   return (
-    <section className="section-block" style={accentFor(block.source)}>
+    <section className="section-block showcase" style={{ ...accentFor(block.source), '--cols': cols }}>
       <BlockHead block={block} fallback="The Latest" />
-      <div className="latest-grid">
-        <ArticleCard article={lead} variant="lead" />
-        <div className="latest-stack">
-          {rest.map((a) => (
-            <ArticleCard key={a.id} article={a} variant="row" />
-          ))}
-        </div>
+      <div className="showcase-grid">
+        {column(left, 'left')}
+        {centre && (
+          <div className="showcase-col centre">
+            <ArticleCard article={centre.article} variant="lead" />
+          </div>
+        )}
+        {column(right, 'right')}
       </div>
     </section>
   )

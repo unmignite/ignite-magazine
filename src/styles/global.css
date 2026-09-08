@@ -425,17 +425,42 @@ button { font-family: inherit; cursor: pointer; }
 }
 .block-head .see-all:hover { background: var(--yellow); }
 
-/* latest grid: 1 big + stack */
-.latest-grid {
+/* showcase: a column of small stories, one big one, another column.
+   --cols is set per block in HomeBlocks.jsx so an empty column can be dropped
+   without leaving a gap; the fallback covers the full three-column case. */
+.showcase-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 2.5rem;
+  grid-template-columns: var(--cols, 1fr 1.7fr 1fr);
+  gap: clamp(1.5rem, 3vw, 2.8rem);
 }
-.latest-stack {
+/* Three short rows can't fill the height of the big story, so the slack has to
+   go somewhere. Centred splits it evenly above and below and reads as framing;
+   pushed to the top it pools into one hole at the bottom, and space-between
+   scatters the rows with 200px between them. */
+.showcase-col.side {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
 }
-.latest-stack .card-row:first-child { padding-top: 0; }
+.showcase-col.side .card-row {
+  grid-template-columns: 110px 1fr;
+  gap: 1rem;
+  padding: 0 0 1rem;
+}
+.showcase-col.side .card-row:last-child { border-bottom: none; padding-bottom: 0; }
+.showcase-col.side .card-title { font-size: 1rem; }
+
+/* The right-hand column mirrors, so both sets of thumbnails sit on the
+   outside edges and the big story is framed by text. */
+.showcase-col.side.right .card-row { grid-template-columns: 1fr 110px; }
+.showcase-col.side.right .card-row .card-img { order: 2; }
+
+/* Portrait centre image — the shape both reference layouts use — but capped,
+   because at 4:5 a wide centre column runs to nearly 700px on its own and
+   towers over the side columns. */
+.showcase-col.centre .card-img { aspect-ratio: 4 / 5; max-height: 500px; }
+.showcase-col.centre .card-title { font-size: clamp(1.5rem, 2.4vw, 2.2rem); }
 
 /* generic card */
 .card { display: block; }
@@ -1652,6 +1677,31 @@ button { font-family: inherit; cursor: pointer; }
   gap: 1.2rem;
 }
 .block-form .field { margin-bottom: 0; }
+/* The slot picker is a list, not a form control — give it the full row. */
+.block-form .field-wide { grid-column: 1 / -1; }
+
+.slot-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0.6rem 1.2rem;
+  margin-top: 0.7rem;
+}
+.slot-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.7rem;
+  align-items: center;
+}
+.slot-row select { min-width: 0; }
+.slot-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+/* The centre slot is the one that carries the layout — say so. */
+.slot-row.center .slot-label { border-bottom: 3px solid var(--accent-ink, var(--pink)); justify-self: start; }
 
 .add-block h3 {
   font-family: var(--font-display);
@@ -1864,8 +1914,23 @@ button { font-family: inherit; cursor: pointer; }
   .meta-panel { position: static; }
 }
 
+@media (max-width: 1080px) {
+  /* Three columns need width. Below this the big story leads and the two
+     lists follow it, so the page still opens on the strongest image. */
+  .showcase-grid { grid-template-columns: 1fr; }
+  .showcase-col.centre { order: -1; }
+  .showcase-col.centre .card-img { aspect-ratio: 16 / 10; }
+  /* Stacked, the mirroring has nothing to mirror against — put every
+     thumbnail back on the left and restore the divider between columns. */
+  .showcase-col.side.right .card-row { grid-template-columns: 110px 1fr; }
+  .showcase-col.side.right .card-row .card-img { order: 0; }
+  .showcase-col.side .card-row:last-child {
+    border-bottom: 1px solid var(--grey-light);
+    padding-bottom: 1rem;
+  }
+}
+
 @media (max-width: 860px) {
-  .latest-grid { grid-template-columns: 1fr; }
   .grid-3 { grid-template-columns: 1fr 1fr; }
   .login-page { grid-template-columns: 1fr; }
   .login-left { min-height: 260px; }

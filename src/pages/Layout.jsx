@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { useTheme } from '../context/ThemeContext'
 import { can } from '../lib/roles'
-import { BLOCK_TYPES, SOURCE_CHOICES, newBlock, sourceLabel } from '../lib/blocks'
+import { BLOCK_TYPES, SOURCE_CHOICES, newBlock, sourceLabel, slotsFor } from '../lib/blocks'
 import { uploadImage } from '../lib/supabase'
 
 export default function LayoutEditor() {
-  const { user } = useStore()
+  const { user, articles } = useStore()
   const { homepage, previewHomepage, saveHomepage, resetHomepage } = useTheme()
   const [blocks, setBlocks] = useState(homepage)
   const [openId, setOpenId] = useState(null)
@@ -102,8 +102,10 @@ export default function LayoutEditor() {
                 <div className="block-id">
                   <strong>{def.label}</strong>
                   <span>
-                    {block.source ? sourceLabel(block.source) : def.blurb}
-                    {block.count ? ` · ${block.count} articles` : ''}
+                    {def.summary
+                      ? def.summary(block)
+                      : (block.source ? sourceLabel(block.source) : def.blurb) +
+                        (block.count ? ` · ${block.count} articles` : '')}
                   </span>
                 </div>
                 <div className="block-actions">
@@ -122,6 +124,8 @@ export default function LayoutEditor() {
                     <BlockField
                       key={f.key}
                       field={f}
+                      block={block}
+                      articles={articles}
                       value={block[f.key]}
                       onChange={(v) => setField(i, f.key, v)}
                     />
@@ -148,9 +152,49 @@ export default function LayoutEditor() {
   )
 }
 
-function BlockField({ field, value, onChange }) {
+function BlockField({ field, value, onChange, block, articles }) {
   const fileRef = useRef(null)
   const [uploading, setUploading] = useState(false)
+
+  // One dropdown per position in the layout. Leaving a slot on Automatic is the
+  // point of the thing — pin the two or three that matter this week and let the
+  // rest keep themselves current.
+  if (field.type === 'picks') {
+    const picks = value || {}
+    const choices = articles
+      .filter((a) => a.status === 'published')
+      .sort((a, b) => (a.date < b.date ? 1 : -1))
+
+    const set = (slotKey, id) => {
+      const next = { ...picks }
+      if (id) next[slotKey] = id
+      else delete next[slotKey] // an empty pin is just noise in the saved layout
+      onChange(next)
+    }
+
+    return (
+      <div className="field field-wide">
+        <label>{field.label}</label>
+        <p className="hint">
+          Automatic slots fill with the newest stories that aren't already pinned
+          here, so the same article never shows up twice.
+        </p>
+        <div className="slot-list">
+          {slotsFor(block).map((s) => (
+            <div className={`slot-row ${s.side}`} key={s.key}>
+              <span className="slot-label">{s.label}</span>
+              <select value={picks[s.key] || ''} onChange={(e) => set(s.key, e.target.value)}>
+                <option value="">Automatic</option>
+                {choices.map((a) => (
+                  <option key={a.id} value={a.id}>{a.title}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   if (field.type === 'source') {
     return (

@@ -27,13 +27,16 @@ export const BLOCK_TYPES = {
     ],
   },
   latest: {
-    label: 'Latest — lead + list',
-    blurb: 'One large story beside a stacked list. The classic front page.',
+    label: 'Latest — showcase',
+    blurb: 'One big story in the middle with a column of smaller ones either side.',
     fields: [
       { key: 'heading', label: 'Heading', type: 'text', default: 'The Latest' },
-      { key: 'source', label: 'Show', type: 'source', default: 'latest' },
-      { key: 'count', label: 'Total articles', type: 'number', min: 2, max: 9, default: 5 },
+      { key: 'source', label: 'Fill empty slots from', type: 'source', default: 'latest' },
+      { key: 'left', label: 'Stories down the left', type: 'number', min: 1, max: 5, default: 3 },
+      { key: 'right', label: 'Stories down the right', type: 'number', min: 1, max: 5, default: 2 },
+      { key: 'picks', label: 'Which story goes where', type: 'picks', default: {} },
     ],
+    summary: (b) => `${sourceLabel(b.source)} · ${slotCount(b)} articles`,
   },
   'section-row': {
     label: 'Section row — grid',
@@ -76,11 +79,16 @@ export const BLOCK_TYPES = {
   },
 }
 
+// Object defaults (the showcase's `picks`) have to be copied out of the
+// registry. Handing every block the same object would mean pinning a story in
+// one showcase pinned it in all of them.
+const cloneDefault = (v) => (v && typeof v === 'object' ? structuredClone(v) : v)
+
 let seq = 0
 export const newBlock = (type) => {
   const def = BLOCK_TYPES[type]
   const block = { id: `b${Date.now()}-${seq++}`, type }
-  for (const f of def.fields) block[f.key] = f.default
+  for (const f of def.fields) block[f.key] = cloneDefault(f.default)
   return block
 }
 
@@ -89,7 +97,7 @@ export const withDefaults = (block) => {
   const def = BLOCK_TYPES[block.type]
   if (!def) return block
   const out = { ...block }
-  for (const f of def.fields) if (out[f.key] === undefined) out[f.key] = f.default
+  for (const f of def.fields) if (out[f.key] === undefined) out[f.key] = cloneDefault(f.default)
   return out
 }
 
@@ -97,7 +105,7 @@ export const withDefaults = (block) => {
 // homepage, so an untouched install looks exactly as designed.
 export const DEFAULT_HOMEPAGE = [
   { id: 'd1', type: 'hero', source: 'featured', count: 6 },
-  { id: 'd2', type: 'latest', heading: 'The Latest', source: 'latest', count: 5 },
+  { id: 'd2', type: 'latest', heading: 'The Latest', source: 'latest', left: 3, right: 2, picks: {} },
   { id: 'd3', type: 'section-row', source: 'music', count: 3, heading: '' },
   { id: 'd4', type: 'section-row', source: 'film-tv', count: 3, heading: '' },
   { id: 'd5', type: 'section-row', source: 'beauty-style', count: 3, heading: '' },
@@ -112,6 +120,54 @@ export const DEFAULT_HOMEPAGE = [
     buttonUrl: 'https://www.instagram.com/unm_ignite/',
   },
 ]
+
+// --- showcase slots ---------------------------------------------------------
+//
+// The showcase has named slots rather than a flat count, so a designer can pin
+// a particular story to a particular position. Slot keys are stable — 'center',
+// 'left-0', 'right-1' — which means lengthening a column never shuffles what is
+// already pinned somewhere else.
+
+const SIDES = ['left', 'right']
+
+// Slots in reading order: down the left, the big one, then down the right.
+export function slotsFor(block) {
+  const side = (name) =>
+    Array.from({ length: block[name] ?? (name === 'left' ? 3 : 2) }, (_, i) => ({
+      key: `${name}-${i}`,
+      label: `${name === 'left' ? 'Left' : 'Right'} ${i + 1}`,
+      side: name,
+    }))
+  return [...side(SIDES[0]), { key: 'center', label: 'Centre — the big one', side: 'center' }, ...side(SIDES[1])]
+}
+
+export const slotCount = (block) => slotsFor(block).length
+
+// Pair every slot with the article that belongs in it: whatever is pinned, and
+// otherwise the next story from `source` that isn't already pinned elsewhere in
+// this block — so nothing appears twice. A pin whose article has since been
+// deleted or unpublished quietly reverts to automatic rather than leaving a hole.
+export function resolveSlots(block, articles) {
+  const slots = slotsFor(block)
+  const picks = block.picks || {}
+  const byId = new Map(articles.filter((a) => a.status === 'published').map((a) => [a.id, a]))
+
+  const out = slots.map((s) => ({ ...s, article: byId.get(picks[s.key]) || null }))
+  const taken = new Set(out.map((s) => s.article?.id).filter(Boolean))
+  const pool = articlesFor(block.source, articles, slots.length + taken.size).filter(
+    (a) => !taken.has(a.id)
+  )
+
+  // Centre first, then down each column. It gets the newest story in the normal
+  // case, and — pointing a showcase at a thin section — it's the slot that
+  // stays filled when there aren't enough articles to go round. A big empty
+  // middle beside a full side column reads as broken.
+  const order = out.map((_, i) => i).sort((a, b) => (out[b].side === 'center') - (out[a].side === 'center'))
+
+  let next = 0
+  for (const i of order) if (!out[i].article) out[i].article = pool[next++] || null
+  return out
+}
 
 // Resolve a block's `source` into actual articles.
 export function articlesFor(source, articles, count) {
