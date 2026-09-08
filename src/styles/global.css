@@ -153,16 +153,42 @@ button { font-family: inherit; cursor: pointer; }
   z-index: 200;
   background: var(--white);
   border-bottom: 2px solid var(--black);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 .adminbar + .nav { top: 30px; }
 
+/* Over the opening image the header is lifted out of the flow entirely, so the
+   image starts at the very top of the page — no white band above it. */
+.nav.overlay { position: fixed; left: 0; right: 0; }
+
+/* Transparent, white type. Applies over the hero and over the open menu. */
+.nav.light { background: transparent; border-bottom-color: transparent; }
+.nav.light .logo { color: var(--white); }
+.nav.light .burger i { background: var(--white); }
+.nav.light .burger-text { color: var(--white); }
+.nav.light .nav-login {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.55);
+  color: var(--white);
+}
+.nav.light .nav-login:hover {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--black);
+}
+
+/* Menu left, wordmark centred, account right — the header reads as three fixed
+   points rather than a list that grows every time a section is added. */
 .nav-inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
   padding: 0 var(--pad);
   height: var(--nav-h);
 }
+.nav-inner .burger { justify-self: start; }
+.nav-inner .nav-login { justify-self: end; }
 
 .logo {
   font-family: var(--font-display);
@@ -174,36 +200,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .logo em { font-style: normal; color: var(--pink); }
 
-.nav-links {
-  display: flex;
-  gap: clamp(0.7rem, 1.4vw, 1.4rem);
-  margin-left: auto;
-}
-.nav-links a {
-  font-size: clamp(0.62rem, 0.85vw, 0.72rem);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: clamp(0.08em, 0.14vw, 0.16em);
-  padding: 0.4em 0;
-  position: relative;
-  white-space: nowrap;
-}
-/* "All" leads the nav, so give it a little more presence. It needs its own ink
-   because yellow on white is 1.21:1 — an underline you cannot see. */
-.nav-links .nav-all { --accent: var(--yellow); --accent-ink: var(--black); }
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  left: 0; bottom: 0;
-  height: 3px; width: 0;
-  /* The nav sits on white, so this needs the ink, not the fill. */
-  background: var(--accent-ink, var(--pink));
-  transition: width 0.22s ease;
-}
-.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
-
 .nav-login {
-  margin-left: 1.2rem;
   border: 2px solid var(--black);
   background: var(--black);
   color: var(--white);
@@ -219,29 +216,42 @@ button { font-family: inherit; cursor: pointer; }
 .nav-login:hover { background: var(--yellow); color: var(--black); border-color: var(--black); }
 
 .burger {
-  display: none;
-  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
   background: none;
   border: none;
-  width: 34px; height: 26px;
-  position: relative;
+  padding: 0;
 }
-.burger span {
+.burger-bars {
+  position: relative;
+  width: 26px; height: 14px;
+  flex: none;
+}
+.burger-bars i {
   position: absolute;
   left: 0; right: 0;
-  height: 3px;
+  height: 2px;
   background: var(--black);
   transition: transform 0.25s, opacity 0.2s, top 0.25s;
 }
-.burger span:nth-child(1) { top: 2px; }
-.burger span:nth-child(2) { top: 11px; }
-.burger span:nth-child(3) { top: 20px; }
-.burger.open span:nth-child(1) { top: 11px; transform: rotate(45deg); }
-.burger.open span:nth-child(2) { opacity: 0; }
-.burger.open span:nth-child(3) { top: 11px; transform: rotate(-45deg); }
+.burger-bars i:nth-child(1) { top: 0; }
+.burger-bars i:nth-child(2) { top: 6px; }
+.burger-bars i:nth-child(3) { top: 12px; }
+.burger.open .burger-bars i:nth-child(1) { top: 6px; transform: rotate(45deg); }
+.burger.open .burger-bars i:nth-child(2) { opacity: 0; }
+.burger.open .burger-bars i:nth-child(3) { top: 6px; transform: rotate(-45deg); }
+.burger-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--black);
+}
 
-/* mobile menu */
-.mobile-menu {
+/* The menu — every section, full screen, one column. */
+.nav-menu {
   position: fixed;
   inset: 0;
   z-index: 150;
@@ -250,18 +260,34 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: var(--pad);
-  gap: 0.4rem;
+  padding: calc(var(--nav-h) + 1rem) var(--pad) 2rem;
+  overflow-y: auto;
 }
-.mobile-menu a {
+.nav-menu-list { display: flex; flex-direction: column; }
+.nav-menu-list a {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(2rem, 8vw, 3.4rem);
+  font-size: clamp(1.9rem, 5.2vw, 3.2rem);
   text-transform: uppercase;
-  line-height: 1.05;
+  line-height: 1.1;
+  width: fit-content;
   transition: color 0.15s;
 }
-.mobile-menu a:hover { color: var(--accent, var(--yellow)); }
+.nav-menu a:hover { color: var(--accent, var(--yellow)); }
+.nav-menu-minor {
+  display: flex;
+  gap: 1.6rem;
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+.nav-menu-minor a {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
 
 /* ============================================================
    HERO (A24-style timed carousel)
@@ -271,8 +297,10 @@ button { font-family: inherit; cursor: pointer; }
   position: relative;
   background: var(--black);
 }
-.shell { --stick-top: var(--nav-h); }
-.shell.with-admin { --stick-top: calc(var(--nav-h) + 30px); }
+/* The header overlays the hero, so only the admin bar takes height off the top
+   of the opening image. */
+.shell { --stick-top: 0px; }
+.shell.with-admin { --stick-top: 30px; }
 
 .hero-stage {
   position: relative;
@@ -281,6 +309,20 @@ button { font-family: inherit; cursor: pointer; }
   overflow: hidden;
   color: var(--white);
 }
+/* A short scrim behind the header. Cover images are uploaded by editors and
+   plenty of them are bright at the top, which is exactly where the white
+   wordmark now sits. Lives on the stage rather than the slide so it doesn't
+   cross-fade with the pictures. */
+.hero-stage::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: calc(var(--nav-h) + 3.5rem);
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.62), rgba(0,0,0,0));
+}
+
 .hero-slide {
   position: absolute;
   inset: 0;
@@ -297,11 +339,19 @@ button { font-family: inherit; cursor: pointer; }
   transition: transform 6s ease;
 }
 .hero-slide.active img { transform: scale(1); }
+/* Dark at the foot for the headline, and enough at the very top to carry the
+   white header that now sits on the image. Nothing in between, so the picture
+   is mostly just the picture. */
 .hero-slide::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.86) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.35) 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.86) 0%,
+    rgba(0,0,0,0.18) 45%,
+    rgba(0,0,0,0.20) 100%
+  );
 }
 
 .hero-copy {
@@ -312,7 +362,18 @@ button { font-family: inherit; cursor: pointer; }
   z-index: 2;
   max-width: 1100px;
 }
-.hero-copy .chip { margin-bottom: 1rem; }
+/* A plain kicker rather than a chip. A filled, outlined box in the corner of a
+   full-bleed photograph is the thing that made the hero feel boxed in. */
+.hero-kicker {
+  display: block;
+  margin-bottom: 0.9rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--white);
+}
 .hero-title {
   font-size: clamp(2.2rem, 6.2vw, 5.6rem);
   color: var(--white);
@@ -342,18 +403,19 @@ button { font-family: inherit; cursor: pointer; }
   color: rgba(255,255,255,0.7);
 }
 
+/* Bottom right, out of the header's way now that the header is on the image. */
 .hero-meta {
   position: absolute;
-  top: 2.2rem;
   right: var(--pad);
-  z-index: 2;
+  bottom: 2.9rem;
+  z-index: 3;
   text-align: right;
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
 }
-.hero-count { font-size: 1rem; }
-.hero-count b { font-size: 1.7rem; color: var(--yellow); }
+.hero-count { font-size: 0.72rem; color: rgba(255, 255, 255, 0.6); }
+.hero-count b { font-size: 0.72rem; color: var(--white); }
 
 .hero-progress {
   position: absolute;
@@ -364,11 +426,13 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   gap: 8px;
 }
+/* Thin hairlines rather than a chunky segmented bar — present enough to click,
+   quiet enough not to frame the photograph. */
 .hero-progress button {
   flex: 1;
-  height: 4px;
+  height: 2px;
   border: none;
-  background: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.28);
   transition: background 0.2s;
   padding: 0;
   position: relative;
@@ -1923,11 +1987,15 @@ button { font-family: inherit; cursor: pointer; }
    ============================================================ */
 
 @media (max-width: 1080px) {
-  .nav-links { display: none; }
-  .burger { display: block; }
-  .nav-login { display: none; }
   .editor-grid { grid-template-columns: 1fr; }
   .meta-panel { position: static; }
+}
+
+@media (max-width: 560px) {
+  /* The menu carries Studio and Log in on small screens, so the header keeps
+     just the menu button and the wordmark. */
+  .nav-login { display: none; }
+  .burger-text { display: none; }
 }
 
 @media (max-width: 1080px) {
