@@ -11,23 +11,35 @@ export const supabase = isSupabaseConfigured ? createClient(url, anonKey) : null
 export const IMAGE_BUCKET = 'article-images'
 
 // The database uses snake_case; the React app uses camelCase.
-export const rowToArticle = (row) => ({
-  id: row.id,
-  slug: row.slug,
-  title: row.title,
-  dek: row.dek ?? '',
-  section: row.section,
-  author: row.author ?? '',
-  date: row.date,
-  readTime: row.read_time ?? 4,
-  cover: row.cover ?? '',
-  coverCredit: row.cover_credit ?? '',
-  tags: row.tags ?? [],
-  featured: Boolean(row.featured),
-  status: row.status,
-  credits: row.credits ?? {},
-  body: row.body ?? '',
-})
+// The must_read column arrives with supabase/must-read.sql. Until that has been
+// run, sending the field would fail the entire save with "column
+// articles.must_read does not exist", so the writer only includes it once the
+// database has actually handed it back to us. That way the code and the
+// migration can land in either order without breaking the Studio.
+let hasMustRead = false
+export const mustReadReady = () => hasMustRead
+
+export function rowToArticle(row) {
+  if ('must_read' in row) hasMustRead = true
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    dek: row.dek ?? '',
+    section: row.section,
+    author: row.author ?? '',
+    date: row.date,
+    readTime: row.read_time ?? 4,
+    cover: row.cover ?? '',
+    coverCredit: row.cover_credit ?? '',
+    tags: row.tags ?? [],
+    featured: Boolean(row.featured),
+    mustRead: Boolean(row.must_read),
+    status: row.status,
+    credits: row.credits ?? {},
+    body: row.body ?? '',
+  }
+}
 
 export const articleToRow = (a) => ({
   slug: a.slug,
@@ -41,6 +53,7 @@ export const articleToRow = (a) => ({
   cover_credit: a.coverCredit ?? '',
   tags: a.tags ?? [],
   featured: Boolean(a.featured),
+  ...(hasMustRead ? { must_read: Boolean(a.mustRead) } : {}),
   status: a.status,
   credits: a.credits ?? {},
   body: a.body ?? '',

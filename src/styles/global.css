@@ -778,6 +778,83 @@ button { font-family: inherit; cursor: pointer; }
   color: rgba(255,255,255,0.75);
   max-width: 560px;
 }
+/* ---------- must read ----------
+   A band across the top of a section: a standing label on the left, then the
+   pieces that section's editor wants read first. Tinted rather than white so
+   it separates from the archive underneath without needing a border. */
+.must-read {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: start;
+  background: #f6f5f1;
+  padding: clamp(1.8rem, 3.5vw, 2.6rem) var(--pad);
+}
+.must-read-label {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  padding-top: 0.1em;
+}
+
+.must-read-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: clamp(1.2rem, 2.2vw, 2rem);
+}
+.must-read-item {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 0.9rem;
+  align-items: start;
+}
+.must-read-img {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--grey-light);
+}
+.must-read-img img { width: 100%; height: 100%; object-fit: cover; }
+.must-read-kicker {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-bottom: 0.35rem;
+}
+.must-read-item h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  line-height: 1.15;
+}
+.must-read-item:hover h3 {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-ink, var(--pink));
+}
+.must-read-item p {
+  margin-top: 0.4rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+@media (max-width: 700px) {
+  /* Stack the label above the list — at this width a side label steals a third
+     of the row and the headlines wrap to four words a line. */
+  .must-read { grid-template-columns: 1fr; gap: 1.2rem; }
+  .must-read-label br { display: none; }
+}
+
 .section-list { padding: clamp(2.5rem, 6vw, 4rem) var(--pad); }
 
 .empty-note {

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { SECTIONS, accentVars } from '../data/sections'
 import ArticleCard from '../components/ArticleCard'
+import MustRead from '../components/MustRead'
 import ArticleSearch, { useArticleSearch } from '../components/ArticleSearch'
 import NotFound from './NotFound'
 
@@ -27,6 +28,10 @@ export default function Section() {
         <h1 className="display">{section.name}</h1>
         <p>{section.blurb}</p>
       </div>
+
+      {/* Above the search, so it reads as the section's own recommendation
+          rather than a result of whatever you typed. */}
+      <MustRead articles={inSection} />
 
       <div className="section-list" style={accentVars(section)}>
         {inSection.length > 0 && (
