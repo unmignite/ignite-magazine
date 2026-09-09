@@ -91,6 +91,10 @@ export const DEFAULT_THEME = {
   // Every section starts white — the monochrome editorial look. Give one a
   // colour here and only that section changes; nothing else on the site moves.
   sections: Object.fromEntries(SECTIONS.map((s) => [s.slug, '#ffffff'])),
+  // The italic line under a section's title. Starts as the copy written in
+  // src/data/sections.js and is editable in Studio → Design from then on, so
+  // rewording one doesn't need a developer.
+  blurbs: Object.fromEntries(SECTIONS.map((s) => [s.slug, s.blurb])),
   status: {
     danger: '#f73630',
     draft: '#fc4c00',
@@ -112,6 +116,7 @@ export const mergeTheme = (saved) => ({
   labels: { ...DEFAULT_LABELS, ...(saved?.labels || {}) },
   colors: { ...DEFAULT_THEME.colors, ...(saved?.colors || {}) },
   sections: { ...DEFAULT_THEME.sections, ...(saved?.sections || {}) },
+  blurbs: { ...DEFAULT_THEME.blurbs, ...(saved?.blurbs || {}) },
   status: { ...DEFAULT_THEME.status, ...(saved?.status || {}) },
   fonts: { ...DEFAULT_THEME.fonts, ...(saved?.fonts || {}) },
   hero: { ...DEFAULT_THEME.hero, ...(saved?.hero || {}) },

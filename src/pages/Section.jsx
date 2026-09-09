@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
+import { useTheme } from '../context/ThemeContext'
 import { SECTIONS, accentVars } from '../data/sections'
 import ArticleCard from '../components/ArticleCard'
 import MustRead from '../components/MustRead'
@@ -10,7 +11,11 @@ import NotFound from './NotFound'
 export default function Section() {
   const { slug } = useParams()
   const { articles, loading } = useStore()
+  const { theme } = useTheme()
   const section = SECTIONS.find((s) => s.slug === slug)
+  // Whatever the Design panel holds, falling back to the copy shipped in
+  // src/data/sections.js. Cleared to nothing, the line simply doesn't print.
+  const blurb = (theme.blurbs?.[slug] ?? section?.blurb ?? '').trim()
 
   const inSection = useMemo(
     () => articles.filter((a) => a.section === slug && a.status === 'published'),
@@ -26,7 +31,7 @@ export default function Section() {
     <>
       <div className="section-hero" style={accentVars(section)}>
         <h1 className="display">{section.name}</h1>
-        <p>{section.blurb}</p>
+        {blurb && <p>{blurb}</p>}
       </div>
 
       {/* Above the search, so it reads as the section's own recommendation

@@ -146,6 +146,26 @@ export default function Design() {
         </section>
 
         <section className="design-block">
+          <h2>Section intros</h2>
+          <p className="hint palette-note">
+            The italic line under a section's title, on its own page. Clear one
+            and the title stands alone.
+          </p>
+          {SECTION_FIELDS.map((f) => (
+            <div className="blurb-row" key={f.key}>
+              <label htmlFor={`blurb-${f.key}`}>{f.label}</label>
+              <textarea
+                id={`blurb-${f.key}`}
+                rows={2}
+                value={draft.blurbs?.[f.key] ?? ''}
+                onChange={(e) => update(['blurbs', f.key], e.target.value)}
+                placeholder="No intro line"
+              />
+            </div>
+          ))}
+        </section>
+
+        <section className="design-block">
           <h2>Status colours</h2>
           <p className="hint palette-note">
             These carry meaning rather than style. Readers and editors expect red
