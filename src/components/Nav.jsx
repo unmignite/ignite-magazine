@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { SECTIONS, accentVars } from '../data/sections'
+import { SECTIONS } from '../data/sections'
 import { useStore } from '../context/StoreContext'
 import { useTheme } from '../context/ThemeContext'
 import SearchOverlay, { MagnifierIcon } from './SearchOverlay'
@@ -92,12 +92,12 @@ export default function Nav() {
 
       {open && (
         <div className="nav-menu" onClick={() => setOpen(false)}>
+          {/* No per-section accent here any more: the menu marks the hovered and
+              current items by weight, not colour, so passing one would be dead. */}
           <nav className="nav-menu-list">
-            <NavLink to="/articles" style={{ '--accent': 'var(--yellow)' }}>All articles</NavLink>
+            <NavLink to="/articles">All articles</NavLink>
             {SECTIONS.map((s) => (
-              <NavLink key={s.slug} to={`/section/${s.slug}`} style={accentVars(s)}>
-                {s.name}
-              </NavLink>
+              <NavLink key={s.slug} to={`/section/${s.slug}`}>{s.name}</NavLink>
             ))}
           </nav>
           <nav className="nav-menu-minor">
