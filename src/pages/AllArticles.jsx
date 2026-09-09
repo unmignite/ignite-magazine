@@ -17,7 +17,7 @@ export default function AllArticles() {
 
   return (
     <>
-      <div className="section-hero" style={{ '--accent': 'var(--yellow)', '--accent-ink': 'var(--black)' }}>
+      <div className="section-hero" style={{ '--accent': 'var(--white)', '--accent-ink': 'var(--black)' }}>
         <h1 className="display">All Articles</h1>
         <p>
           Everything Ignite has published — {published.length} stories and counting.
@@ -25,7 +25,7 @@ export default function AllArticles() {
         </p>
       </div>
 
-      <div className="section-list" style={{ '--accent': 'var(--yellow)', '--accent-ink': 'var(--black)' }}>
+      <div className="section-list" style={{ '--accent': 'var(--white)', '--accent-ink': 'var(--black)' }}>
         {published.length > 0 && (
           <ArticleSearch search={search} total={published.length} />
         )}

@@ -26,9 +26,7 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-left">
-        <h1 className="display">
-          The <span className="y">Studio</span>.
-        </h1>
+        <h1 className="display">The Studio.</h1>
         <p>
           Everything about Ignite is edited from inside Ignite — write, style and publish
           without ever leaving the site.

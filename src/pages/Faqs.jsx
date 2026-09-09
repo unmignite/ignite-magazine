@@ -11,7 +11,9 @@ export default function Faqs() {
 
   return (
     <>
-      <div className="section-hero" style={{ '--accent': 'var(--yellow)', '--accent-ink': 'var(--black)' }}>
+      {/* White like every section banner — the accent is the fill for the
+          title, the ink is for the hairlines further down the page. */}
+      <div className="section-hero" style={{ '--accent': 'var(--white)', '--accent-ink': 'var(--black)' }}>
         <h1 className="display">FAQs</h1>
         <p>Wondering about something? Your answer might be right here.</p>
       </div>

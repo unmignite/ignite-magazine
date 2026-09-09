@@ -721,9 +721,10 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   white-space: nowrap;
   padding-bottom: 0.2em;
-  transition: background 0.15s;
 }
-.block-head .see-all:hover { background: var(--yellow); }
+/* Same treatment as "Read now" — these sit on screen together, and leaving one
+   flashing yellow beside the other would read as a bug. */
+.block-head .see-all:hover { font-weight: 900; }
 
 /* showcase — three columns, three different weights.
    Left: a couple of large cards, images at full column width.
@@ -835,9 +836,10 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   letter-spacing: 0.16em;
   padding-bottom: 0.15em;
-  transition: background 0.15s;
 }
-.card:hover .read-now { background: var(--yellow); }
+/* Weight, not a yellow highlighter — same as the menu. It sits on its own line
+   inside the card, so the extra width has nothing to push. */
+.card:hover .read-now { font-weight: 900; }
 
 /* horizontal row card — the showcase's right-hand list. No rules between the
    rows either; the gap between them carries it. */
@@ -1405,7 +1407,6 @@ button { font-family: inherit; cursor: pointer; }
   overflow: hidden;
 }
 .login-left .display { font-size: clamp(2.4rem, 5vw, 4.6rem); }
-.login-left .display .y { color: var(--yellow); }
 .login-left p { font-family: var(--font-serif); font-style: italic; color: rgba(255,255,255,0.7); max-width: 420px; line-height: 1.6; }
 .login-right {
   display: flex;
