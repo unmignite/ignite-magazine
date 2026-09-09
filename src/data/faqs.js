@@ -5,12 +5,15 @@
 // empty `answer` is skipped, so a half-written FAQ never shows up publicly.
 //
 // Answers accept simple HTML (<strong>, <em>, <a href="…">) if you need it.
+//
+// A group can also carry a `blurb: '…'`, printed under the tabs. None do at the
+// moment — the questions introduce themselves — but adding the line brings it
+// back for that group.
 
 export const FAQ_GROUPS = [
   {
     id: 'general',
     label: 'General',
-    blurb: 'Joining, commitment, and what Ignite actually is.',
     items: [
       {
         q: 'Is IGNITE listed as an NAA module?',
@@ -41,7 +44,6 @@ export const FAQ_GROUPS = [
   {
     id: 'writers',
     label: 'Contributing Writers',
-    blurb: 'Writing for us without joining the full committee.',
     items: [
       {
         q: 'How does a contributing writer work?',
@@ -68,7 +70,6 @@ export const FAQ_GROUPS = [
   {
     id: 'photographers',
     label: 'Featured Photographers',
-    blurb: 'Shooting for Ignite, and what kit you need.',
     items: [
       {
         q: 'How does a featured photographer work?',
