@@ -91,7 +91,11 @@ export function useArticleSearch(articles) {
   }
 }
 
-export default function ArticleSearch({ search, total }) {
+// `showQuery` turns off the search box while leaving the filters. Section pages
+// use that: the magnifier in the header searches the whole magazine, so a second
+// box on the page is redundant — but filtering a section by writer, tag or
+// title order isn't something the header does, and is worth keeping.
+export default function ArticleSearch({ search, total, showQuery = true }) {
   const [showFilters, setShowFilters] = useState(false)
   const {
     query, setQuery, author, setAuthor, tag, setTag, section, setSection, sort, setSort,
@@ -101,16 +105,18 @@ export default function ArticleSearch({ search, total }) {
   return (
     <div className="article-search">
       <div className="search-row">
-        <div className="search-input">
-          <span aria-hidden="true">⌕</span>
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by title, writer or tag…"
-            aria-label="Search articles"
-          />
-        </div>
+        {showQuery && (
+          <div className="search-input">
+            <span aria-hidden="true">⌕</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by title, writer or tag…"
+              aria-label="Search articles"
+            />
+          </div>
+        )}
 
         <button
           className={`filter-toggle ${showFilters ? 'on' : ''}`}

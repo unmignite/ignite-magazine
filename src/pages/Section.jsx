@@ -34,8 +34,11 @@ export default function Section() {
       <MustRead articles={inSection} />
 
       <div className="section-list" style={accentVars(section)}>
+        {/* No search box — the magnifier in the header covers searching, and
+            covers the whole magazine rather than just this section. The filters
+            stay: writer, tag and sort aren't up there. */}
         {inSection.length > 0 && (
-          <ArticleSearch search={search} total={inSection.length} />
+          <ArticleSearch search={search} total={inSection.length} showQuery={false} />
         )}
 
         {loading && !articles.length ? (
@@ -48,7 +51,7 @@ export default function Section() {
           </div>
         ) : inSection.length ? (
           <p className="empty-note">
-            Nothing matches that search.{' '}
+            Nothing matches those filters.{' '}
             <button className="link-button" onClick={search.clear}>Clear filters</button>
           </p>
         ) : (
