@@ -68,8 +68,26 @@ export default function Nav() {
             <span className="burger-text">{open ? 'Close' : 'Menu'}</span>
           </button>
 
-          <Link to="/" className="logo" onClick={() => openMenu(false)}>
-            IGNITE<em>.</em>
+          {/* Both variants ship and CSS shows one, rather than swapping the src
+              — a swap flashes an empty box the first time the header changes
+              state over the hero. BASE_URL because the deploy path is a build
+              setting, not always "/". */}
+          <Link to="/" className="logo" onClick={() => openMenu(false)} aria-label="IGNITE — home">
+            <img
+              className="logo-ink-dark"
+              src={`${import.meta.env.BASE_URL}logo-dark-ink.png`}
+              alt="IGNITE"
+              width="386"
+              height="142"
+            />
+            <img
+              className="logo-ink-light"
+              src={`${import.meta.env.BASE_URL}logo-light-ink.png`}
+              alt=""
+              aria-hidden="true"
+              width="386"
+              height="142"
+            />
           </Link>
 
           <div className="nav-right">

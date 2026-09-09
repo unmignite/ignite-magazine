@@ -163,7 +163,8 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Transparent, white type. Applies over the hero and over the open menu. */
 .nav.light { background: transparent; border-bottom-color: transparent; }
-.nav.light .logo { color: var(--white); }
+.nav.light .logo-ink-dark { display: none; }
+.nav.light .logo-ink-light { display: block; }
 .nav.light .burger i { background: var(--white); }
 .nav.light .burger-text { color: var(--white); }
 .nav.light .nav-login {
@@ -212,15 +213,16 @@ button { font-family: inherit; cursor: pointer; }
 .nav.light .nav-search { color: var(--white); }
 .nav.light .nav-search:hover { color: var(--yellow); }
 
-.logo {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 2rem;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  padding-top: 0.12em; /* League Spartan optical centering */
+/* The real wordmark, not type set to look like it. The artwork is the flame and
+   IGNITE only — the full lockup carries a tagline that would be four pixels
+   tall in a 72px header. brand/ has the complete version for print and social. */
+.logo { display: block; line-height: 0; }
+.logo img {
+  display: block;
+  height: 34px;
+  width: auto;
 }
-.logo em { font-style: normal; color: var(--pink); }
+.logo .logo-ink-light { display: none; }
 
 .nav-login {
   border: 2px solid var(--black);
