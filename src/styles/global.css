@@ -671,14 +671,13 @@ button { font-family: inherit; cursor: pointer; }
 
 .section-block { padding: clamp(3rem, 7vw, 5.5rem) var(--pad); }
 
+/* No rule under the heading — the whitespace does the separating. */
 .block-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 4px solid var(--black);
-  padding-bottom: 0.8rem;
-  margin-bottom: 2.2rem;
+  margin-bottom: 2.4rem;
 }
 .block-head h2 {
   font-family: var(--font-display);
@@ -695,7 +694,6 @@ button { font-family: inherit; cursor: pointer; }
   letter-spacing: 0.18em;
   text-transform: uppercase;
   white-space: nowrap;
-  border-bottom: 3px solid var(--accent-ink, var(--pink));
   padding-bottom: 0.2em;
   transition: background 0.15s;
 }
@@ -811,18 +809,17 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   letter-spacing: 0.16em;
   padding-bottom: 0.15em;
-  border-bottom: 3px solid var(--accent-ink, var(--pink));
   transition: background 0.15s;
 }
 .card:hover .read-now { background: var(--yellow); }
 
-/* horizontal row card (stack) */
+/* horizontal row card — the showcase's right-hand list. No rules between the
+   rows either; the gap between them carries it. */
 .card-row {
   display: grid;
   grid-template-columns: 150px 1fr;
   gap: 1.2rem;
   padding: 1.2rem 0;
-  border-bottom: 1px solid var(--grey-light);
   align-items: start;
 }
 .card-row .card-img { aspect-ratio: 1 / 1; }
@@ -836,8 +833,8 @@ button { font-family: inherit; cursor: pointer; }
   gap: 2.2rem;
 }
 
-/* section rows on home */
-.home-section-block { border-top: 4px solid var(--black); }
+/* Section rows on the homepage used to be separated by a full-width black rule.
+   They're separated by the section padding alone now. */
 
 /* join banner */
 .join {
@@ -1270,7 +1267,9 @@ button { font-family: inherit; cursor: pointer; }
 .article-tags .chip { background: var(--white); border: 2px solid var(--black); }
 .article-tags .chip:hover { background: var(--yellow); }
 
-.related { border-top: 4px solid var(--black); margin-top: clamp(3rem, 6vw, 4.5rem); }
+/* Same rule the homepage used to carry, so it goes too — the margin plus the
+   section padding is already a wide gap between the story and what follows. */
+.related { margin-top: clamp(3rem, 6vw, 4.5rem); }
 
 .edit-fab {
   position: fixed;
@@ -2392,7 +2391,6 @@ button { font-family: inherit; cursor: pointer; }
   .showcase-col.right .card-row { grid-template-columns: 96px 1fr; }
   .showcase-col.right .card-row .card-img { order: 0; }
   .showcase-col.right .card-row:last-child {
-    border-bottom: 1px solid var(--grey-light);
     padding-bottom: 1.1rem;
     margin-bottom: 1.1rem;
   }
