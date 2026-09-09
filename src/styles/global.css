@@ -1011,7 +1011,10 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ---------- reader search + filters ---------- */
 
-.article-search { margin-bottom: 2.5rem; }
+/* One height for every control in this row. The buttons used to have no
+   vertical padding at all and took their height from the search box beside
+   them — so on a section page, where the box is gone, they collapsed to 15px. */
+.article-search { margin-bottom: 2.5rem; --control-h: 49px; }
 
 .search-row {
   display: flex;
@@ -1023,6 +1026,7 @@ button { font-family: inherit; cursor: pointer; }
 .search-input {
   flex: 1;
   min-width: 240px;
+  min-height: var(--control-h);
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -1046,6 +1050,10 @@ button { font-family: inherit; cursor: pointer; }
 
 .filter-toggle,
 .clear-filters {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-h);
   border: 2px solid var(--black);
   background: var(--white);
   font-family: var(--font-display);
