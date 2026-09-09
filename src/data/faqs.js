@@ -13,8 +13,8 @@ export const FAQ_GROUPS = [
     blurb: 'Joining, commitment, and what Ignite actually is.',
     items: [
       {
-        q: 'Is this an NAA module like before?',
-        a: 'Yes, we are a NAA (Nottingham Advantage Award) module under Student Media! If you are joining us from NAA, you will be required to send in 3 submissions and attend at least 3 writing circles to qualify for your certificate.',
+        q: 'Is IGNITE listed as an NAA module?',
+        a: 'Yes, we are a NAA (Nottingham Advantage Award) module under Student Media! If you are joining us from NAA, you will be required to send in 3 article submissions and attend at least 3 of our Writing Circles to qualify for your certificate.',
       },
       {
         q: "My schedule's really busy & it's holding me back from joining the team",
@@ -26,15 +26,15 @@ export const FAQ_GROUPS = [
       },
       {
         q: 'Are there any meetings to attend?',
-        a: 'So far, we are planning to host bi-weekly writing circles. These work as socials for you to meet and connect with other IGNITE team members!',
+        a: 'Our only in-person meetings for members are our Writing Circles, which work as socials for you to meet and connect with other IGNITE team members!',
       },
       {
         q: "Okay… What's so special about IGNITE?",
-        a: "If you've always wanted to interview local artists, notable figures in Malaysia, or attend special media events, there's a chance we might be able to connect you to these opportunities!",
+        a: "IGNITE is all about bringing together the multi-faceted nature of our media landscape into a joint platform. So if you've always wanted to interview local artists, notable figures in Malaysia, or attend special media events like movie screenings, IGNITE is the place where there's a chance we might be able to connect you to these opportunities!",
       },
       {
         q: 'Can I apply to join the IGNITE team?',
-        a: 'Our recruitment for the 25/26 IGNITE team has closed but fear not! We are always looking out for contributing writers to submit articles and avid feature photographers! Think you have what it takes? Refer to the “Contributing Writers” section above for more details.',
+        a: "Yes! Our recruitment for the IGNITE 26/27 team is still open for the following positions: Events Executive, Publicity and Marketing Officer, Sports Section Editor, News Junior Editor, Notts Uncovered Section &amp; Junior Editor. If you're interested, please reach out to us at unmignite@gmail.com!",
       },
     ],
   },
