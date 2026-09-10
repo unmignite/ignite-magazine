@@ -854,6 +854,34 @@ button { font-family: inherit; cursor: pointer; }
 .card-row .card-title { font-size: 1.05rem; }
 .card-row .card-body { padding-top: 0; }
 
+/* ---------- lead row ----------
+   The top of a section: three stories across with the lead one big in the
+   middle. Everything after them drops into the ordinary grid below. */
+.lead-row {
+  display: grid;
+  grid-template-columns: 1fr 1.9fr 1fr;
+  gap: clamp(1.5rem, 2.6vw, 2.4rem);
+  align-items: start;
+  margin-bottom: clamp(2.6rem, 5vw, 4rem);
+}
+.lead-main .card-title { font-size: clamp(1.7rem, 2.9vw, 2.5rem); }
+.lead-main .card-dek { font-size: 1.05rem; -webkit-line-clamp: 3; }
+/* The flanking pair are the 'stack' card — image, kicker, headline, byline —
+   so the middle keeps the dek and the call to action to itself. Square crops,
+   because 16:10 across a third of the row leaves the sides half the height of
+   the middle and the row reads as one story with two offcuts. */
+.lead-side .card-img { aspect-ratio: 1 / 1; }
+.lead-side .card-title { font-size: 1.15rem; }
+
+@media (max-width: 900px) {
+  /* One column, lead first. Three abreast at this width gives the middle
+     story about 250px, which is narrower than the grid it is meant to lead. */
+  .lead-row { grid-template-columns: 1fr; gap: 2.2rem; }
+  .lead-main { order: -1; }
+  /* Full width now, so the square crop has nothing to compensate for. */
+  .lead-side .card-img { aspect-ratio: 16 / 10; }
+}
+
 /* 3-col grid */
 .grid-3 {
   display: grid;

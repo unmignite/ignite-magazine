@@ -4,6 +4,7 @@ import { useStore } from '../context/StoreContext'
 import { useTheme } from '../context/ThemeContext'
 import { SECTIONS, accentVars } from '../data/sections'
 import ArticleCard from '../components/ArticleCard'
+import LeadRow, { LEAD_COUNT } from '../components/LeadRow'
 import MustRead from '../components/MustRead'
 import ArticleSearch, { useArticleSearch } from '../components/ArticleSearch'
 import NotFound from './NotFound'
@@ -24,6 +25,14 @@ export default function Section() {
 
   // Hooks must run before any early return, so this sits above the guard.
   const search = useArticleSearch(inSection)
+
+  // The first three lead the page; everything after them is the grid. The split
+  // is taken from the filtered list rather than the section, so narrowing to one
+  // writer promotes a new three instead of leaving a stale trio at the top.
+  // Under three there is nothing to lead with, so it all stays a grid.
+  const rest = search.filtered.length >= LEAD_COUNT
+    ? search.filtered.slice(LEAD_COUNT)
+    : search.filtered
 
   if (!section) return <NotFound />
 
@@ -49,11 +58,16 @@ export default function Section() {
         {loading && !articles.length ? (
           <p className="empty-note">Loading…</p>
         ) : search.filtered.length ? (
-          <div className="grid-3">
-            {search.filtered.map((a) => (
-              <ArticleCard key={a.id} article={a} />
-            ))}
-          </div>
+          <>
+            <LeadRow articles={search.filtered} />
+            {rest.length > 0 && (
+              <div className="grid-3">
+                {rest.map((a) => (
+                  <ArticleCard key={a.id} article={a} />
+                ))}
+              </div>
+            )}
+          </>
         ) : inSection.length ? (
           <p className="empty-note">
             Nothing matches those filters.{' '}
