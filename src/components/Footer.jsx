@@ -64,6 +64,9 @@ export default function Footer() {
           <h4>More</h4>
           <ul>
             <li><Link to="/articles">All articles</Link></li>
+            {/* Also in the menu — a page reachable from only one of the two
+                places people look for it is a page half the readers miss. */}
+            <li><Link to="/meet-the-team">Meet the team</Link></li>
             <li><Link to="/faqs">FAQs</Link></li>
             <li><a href="#contact">Contact</a></li>
             <li><Link to="/login">Editor login</Link></li>

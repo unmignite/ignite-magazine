@@ -1044,6 +1044,23 @@ button { font-family: inherit; cursor: pointer; }
 
 .section-list { padding: clamp(2.5rem, 6vw, 4rem) var(--pad); }
 
+/* Holds the page open while there's nothing on it yet, so a placeholder reads
+   as "not yet" rather than as a page that failed to load. */
+.team-page {
+  min-height: 42vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(3rem, 8vw, 6rem) var(--pad);
+}
+.team-page p {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.2rem, 2.6vw, 1.8rem);
+  color: var(--grey);
+  text-align: center;
+}
+
 .empty-note {
   padding: 4rem var(--pad);
   text-align: center;
