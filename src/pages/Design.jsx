@@ -214,6 +214,19 @@ export default function Design() {
             />
             <p className="hint">How long each featured article stays on screen.</p>
           </div>
+
+          {/* Its own colour, in its own place. Nothing in the three palettes
+              touches it and it touches nothing in them. */}
+          <ColorRow
+            field={{
+              key: 'hover',
+              label: 'Hover',
+              hint: 'Behind the headline and on the arrows. The carousel’s alone — no other palette changes it.',
+            }}
+            group="hero"
+            draft={draft}
+            update={update}
+          />
         </section>
 
         <section className="design-block">

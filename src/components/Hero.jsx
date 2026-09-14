@@ -29,6 +29,9 @@ export default function Hero({ articles, block = {} }) {
     return () => clearInterval(t)
   }, [n, index, SLIDE_MS])
 
+  // Wraps both ways, so the arrows never dead-end on the first or last slide.
+  const step = (dir) => setIndex((i) => (i + dir + n) % n)
+
   if (!n) return null
   // A shorter reel after an edit shouldn't leave the index out past the end.
   const current = slides[Math.min(index, n - 1)]
@@ -69,6 +72,15 @@ export default function Hero({ articles, block = {} }) {
         )}
 
         <div className="hero-meta">
+          {/* Stepping restarts the timer — `index` is in the effect's deps — so
+              a slide you asked for gets its full turn rather than the remainder
+              of the one you interrupted. */}
+          <button className="hero-arrow" onClick={() => step(-1)} aria-label="Previous story">
+            ←
+          </button>
+          <button className="hero-arrow" onClick={() => step(1)} aria-label="Next story">
+            →
+          </button>
           <div className="hero-count">
             <b>{String(index + 1).padStart(2, '0')}</b> / {String(n).padStart(2, '0')}
           </div>

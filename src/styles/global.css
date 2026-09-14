@@ -612,13 +612,24 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   color: var(--white);
 }
+/* Inline rather than block so the hover highlight hugs the words line by line
+   instead of drawing one bar across the whole column. Nothing shows at rest,
+   so the resting headline is unchanged. */
 .hero-title {
   font-size: clamp(2.2rem, 6.2vw, 5.6rem);
   color: var(--white);
   text-wrap: balance;
-  display: block;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 0.1em;
+  margin-left: -0.1em;
+  transition: background-color 0.18s ease;
 }
-.hero-title:hover { color: var(--yellow); }
+/* The carousel's own colour — black, and tied to nothing else on the site.
+   It's a highlight behind the words, not the words themselves: this headline
+   sits on a photograph, and black type on a photograph disappears. */
+.hero-title:hover { background-color: var(--hero-hover, var(--black)); }
 .hero-dek {
   margin-top: 1.1rem;
   max-width: 620px;
@@ -647,13 +658,36 @@ button { font-family: inherit; cursor: pointer; }
   right: var(--pad);
   bottom: 2.9rem;
   z-index: 3;
-  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: 0.14em;
 }
-.hero-count { font-size: 0.72rem; color: rgba(255, 255, 255, 0.6); }
+.hero-count { font-size: 0.72rem; color: rgba(255, 255, 255, 0.6); margin-left: 0.35rem; }
 .hero-count b { font-size: 0.72rem; color: var(--white); }
+
+/* Step the reel by hand. Grouped with the counter rather than floated over the
+   middle of the picture, where they would sit on whatever the photograph is
+   actually of. */
+.hero-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  padding: 0;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--white);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+.hero-arrow:hover {
+  background-color: var(--hero-hover, var(--black));
+  border-color: var(--hero-hover, var(--black));
+}
 
 .hero-progress {
   position: absolute;
@@ -2512,7 +2546,9 @@ button { font-family: inherit; cursor: pointer; }
   .grid-3 { grid-template-columns: 1fr; }
   .card-row { grid-template-columns: 110px 1fr; }
   .hero-title { font-size: clamp(1.9rem, 9vw, 2.6rem); }
-  .hero-meta { display: none; }
+  /* The arrows stay — they're the manual control, and a phone has no hover to
+     discover the progress bars with. Only the counter goes, for the room. */
+  .hero-count { display: none; }
   .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 

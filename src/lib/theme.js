@@ -107,6 +107,10 @@ export const DEFAULT_THEME = {
   },
   hero: {
     intervalMs: 6000,
+    // The landing carousel's own hover colour. Deliberately not part of the
+    // brand, section or status palettes — changing any of those leaves the
+    // carousel alone, and changing this leaves the rest of the site alone.
+    hover: '#0a0a0a',
   },
 }
 
@@ -176,4 +180,5 @@ export function applyTheme(theme) {
   for (const { key, cssVar } of FONT_FIELDS) {
     if (t.fonts[key]) root.style.setProperty(cssVar, t.fonts[key])
   }
+  if (t.hero.hover) root.style.setProperty('--hero-hover', t.hero.hover)
 }
