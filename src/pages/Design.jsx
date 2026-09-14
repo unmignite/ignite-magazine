@@ -220,8 +220,8 @@ export default function Design() {
           <ColorRow
             field={{
               key: 'hover',
-              label: 'Hover',
-              hint: 'The headline and the arrows on hover. The carousel’s alone — no other palette changes it.',
+              label: 'Headline hover',
+              hint: 'The line under the headline on hover. Keep it light — it’s drawn over a photograph.',
             }}
             group="hero"
             draft={draft}

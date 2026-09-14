@@ -107,10 +107,11 @@ export const DEFAULT_THEME = {
   },
   hero: {
     intervalMs: 6000,
-    // The landing carousel's own hover colour. Deliberately not part of the
-    // brand, section or status palettes — changing any of those leaves the
+    // The line under the landing headline on hover. Deliberately not part of
+    // the brand, section or status palettes — changing any of those leaves the
     // carousel alone, and changing this leaves the rest of the site alone.
-    hover: '#0a0a0a',
+    // Wants to stay light: it is drawn over a photograph.
+    hover: '#ffffff',
   },
 }
 

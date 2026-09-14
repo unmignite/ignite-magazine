@@ -505,6 +505,28 @@ button { font-family: inherit; cursor: pointer; }
     rgba(0,0,0,0.20) 100%
   );
 }
+/* A second scrim, only while the headline is hovered: the picture steps back so
+   the white type steps forward. Transparent by the top of the gradient, so it
+   deepens the band the headline actually sits in and leaves the photograph
+   alone. Its own layer rather than a swap on .hero-slide::after because
+   gradients don't interpolate — that would snap, where opacity crossfades.
+   z-index 1 puts it over the slides and under the copy, meta and progress. */
+.hero-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.35) 0%,
+    rgba(0,0,0,0.22) 45%,
+    rgba(0,0,0,0) 100%
+  );
+}
+.hero-stage:has(.hero-title:hover)::after { opacity: 1; }
 
 /* ---------- the closing slide ----------
    The invitation used to be a panel above the footer, where it only worked if
@@ -612,18 +634,26 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   color: var(--white);
 }
+/* Every other hover on the site goes bolder rather than brighter — the menu,
+   "Read now", "See all". This headline is already 900, so weight isn't
+   available to it; the underline is the same move in the one place that can't
+   make it. It also gives the headline the link affordance it never had.
+   Always drawn and only its colour changes, so hovering can't reflow the
+   headline or shove the dek down the page. */
 .hero-title {
   font-size: clamp(2.2rem, 6.2vw, 5.6rem);
   color: var(--white);
   text-wrap: balance;
   display: block;
-  transition: color 0.18s ease;
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.08em;
+  transition: text-decoration-color 0.18s ease;
 }
-/* The carousel's own colour — black, and tied to nothing else on the site.
-   The type itself takes it. Note the foot of each slide carries a dark scrim,
-   so black type here reads as the headline dimming rather than as a colour
-   change; that's the intended effect, not a bug. */
-.hero-title:hover { color: var(--hero-hover, var(--black)); }
+/* The carousel's own colour, tied to nothing else on the site. White by
+   default, and it wants to stay light: it is drawn on a photograph. */
+.hero-title:hover { text-decoration-color: var(--hero-hover, var(--white)); }
 .hero-dek {
   margin-top: 1.1rem;
   max-width: 620px;
@@ -678,9 +708,12 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid rgba(255, 255, 255, 0.45);
   transition: background-color 0.18s ease, border-color 0.18s ease;
 }
+/* Inverting to black, like the menu — not the headline's colour, which is now a
+   light one chosen to read as type on a photograph and would leave a white
+   button with a white arrow on it. */
 .hero-arrow:hover {
-  background-color: var(--hero-hover, var(--black));
-  border-color: var(--hero-hover, var(--black));
+  background-color: var(--black);
+  border-color: var(--black);
 }
 
 .hero-progress {
