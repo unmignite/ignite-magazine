@@ -26,16 +26,15 @@ export default function HomeBlock({ block, articles }) {
   }
 }
 
-// A heading that takes the accent colour of whichever section it points at.
+// The heading an editor typed in the Layout panel, falling back to the section
+// name and then to the block's own default. Plain black: the accent colour on
+// the section wrapper is for the cards below, not for this line.
 function BlockHead({ block, fallback }) {
   const sec = sectionBySlug(block.source)
   const title = block.heading?.trim() || sec?.name || fallback
   return (
     <div className="block-head">
-      <h2>
-        {title}
-        <span className="accent-dot">.</span>
-      </h2>
+      <h2>{title}</h2>
       {sec && (
         <Link className="see-all" to={`/section/${sec.slug}`}>
           All {sec.name} →
