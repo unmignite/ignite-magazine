@@ -15,12 +15,12 @@
 // caps, pull-quote bars) — see accentVars() below.
 
 export const SECTIONS = [
-  { slug: 'music', name: 'Music', blurb: 'No filters, no censors. Just pure music journalism.' },
+  { slug: 'music', name: 'Music', blurb: 'Sounds worth hearing and talking about, without skips.' },
   { slug: 'film-tv', name: 'Film & TV', blurb: 'From the silver screen to the small screen — watched, dissected, adored.' },
   { slug: 'beauty-style', name: 'Beauty & Style', blurb: 'Runways, racks and everything your wardrobe is afraid to ask.' },
-  { slug: 'opinions', name: 'Opinions', blurb: 'Loud thoughts, carefully written. Agree at your own risk.' },
+  { slug: 'opinions', name: 'Opinions', blurb: 'Loud thoughts, carefully curated. Disagree at your own risk.' },
   { slug: 'food-travel', name: 'Food & Travel', blurb: 'Eat first, write later. Stories from plates and places.' },
-  { slug: 'news', name: 'News', blurb: 'What is happening on campus and why it matters.' },
+  { slug: 'news', name: 'News', blurb: 'Events shaping our society at large, explained.' },
   { slug: 'sports', name: 'Sports', blurb: 'Sweat, rivalries and glory — varsity and beyond.' },
   { slug: 'notts-uncovered', name: 'Notts Uncovered', blurb: 'The hidden corners of Nottingham, uncovered one story at a time.' },
 ].map((s) => ({
