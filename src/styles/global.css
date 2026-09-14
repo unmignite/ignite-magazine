@@ -1467,17 +1467,25 @@ button { font-family: inherit; cursor: pointer; }
 }
 .footer-contact a:hover { color: var(--yellow); border-bottom-color: var(--yellow); }
 
+/* White, so the colour in the footer is something you find by pointing at it
+   rather than three headings competing with the links under them. */
 .footer h4 {
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--yellow);
+  color: var(--white);
   margin-bottom: 1rem;
 }
 .footer li { list-style: none; margin-bottom: 0.55rem; }
-.footer li a { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
-.footer li a:hover { color: var(--pink); }
+.footer li a {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.8);
+  transition: color 0.15s;
+}
+/* The same swatch the contact links and the legal row already hover to, so the
+   whole footer answers in one colour and re-theming it moves all three. */
+.footer li a:hover { color: var(--yellow); }
 
 .footer-legal {
   display: flex;
