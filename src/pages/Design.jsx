@@ -221,7 +221,7 @@ export default function Design() {
             field={{
               key: 'hover',
               label: 'Hover',
-              hint: 'Behind the headline and on the arrows. The carousel’s alone — no other palette changes it.',
+              hint: 'The headline and the arrows on hover. The carousel’s alone — no other palette changes it.',
             }}
             group="hero"
             draft={draft}

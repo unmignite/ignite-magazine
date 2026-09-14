@@ -612,24 +612,18 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   color: var(--white);
 }
-/* Inline rather than block so the hover highlight hugs the words line by line
-   instead of drawing one bar across the whole column. Nothing shows at rest,
-   so the resting headline is unchanged. */
 .hero-title {
   font-size: clamp(2.2rem, 6.2vw, 5.6rem);
   color: var(--white);
   text-wrap: balance;
-  display: inline;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  padding: 0 0.1em;
-  margin-left: -0.1em;
-  transition: background-color 0.18s ease;
+  display: block;
+  transition: color 0.18s ease;
 }
 /* The carousel's own colour — black, and tied to nothing else on the site.
-   It's a highlight behind the words, not the words themselves: this headline
-   sits on a photograph, and black type on a photograph disappears. */
-.hero-title:hover { background-color: var(--hero-hover, var(--black)); }
+   The type itself takes it. Note the foot of each slide carries a dark scrim,
+   so black type here reads as the headline dimming rather than as a colour
+   change; that's the intended effect, not a bug. */
+.hero-title:hover { color: var(--hero-hover, var(--black)); }
 .hero-dek {
   margin-top: 1.1rem;
   max-width: 620px;
