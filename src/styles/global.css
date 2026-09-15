@@ -554,10 +554,24 @@ button { font-family: inherit; cursor: pointer; }
   line-height: 0.94;
   letter-spacing: -0.02em;
 }
+/* The invitation's colours are fixed, not theme tokens, and deliberately so.
+   Three lines that have to stay three DIFFERENT colours are not a palette —
+   they're one picture. Pointed at the editable palette, they collapsed to two
+   the moment Yellow and the primary accent were both set to #c06142, and the
+   slide read as a mistake rather than a design. Changing these is a code
+   change now, which is the point: the Design panel can't break the set.
+   Used by both the closing slide and the old join panel. */
+.hero-join,
+.join {
+  --join-1: #ffed00; /* yellow */
+  --join-2: #ff10a3; /* pink   */
+  --join-3: #8acd01; /* green  */
+}
+
 .hero-join-lines span { display: block; }
-.hero-join-lines .y { color: var(--yellow); }
-.hero-join-lines .p { color: var(--pink); }
-.hero-join-lines .g { color: var(--green); }
+.hero-join-lines .y { color: var(--join-1); }
+.hero-join-lines .p { color: var(--join-2); }
+.hero-join-lines .g { color: var(--join-3); }
 
 .hero-join-text {
   margin: clamp(1.2rem, 3vw, 2rem) auto 0;
@@ -573,7 +587,7 @@ button { font-family: inherit; cursor: pointer; }
 .hero-join-btn {
   display: inline-block;
   margin-top: clamp(1.6rem, 3.5vw, 2.6rem);
-  background: var(--yellow);
+  background: var(--join-1);
   color: var(--black);
   font-family: var(--font-display);
   font-weight: 800;
@@ -584,7 +598,7 @@ button { font-family: inherit; cursor: pointer; }
   transition: background 0.15s, color 0.15s, transform 0.15s;
 }
 .hero-join-btn:hover {
-  background: var(--pink);
+  background: var(--join-2);
   color: var(--white);
   transform: rotate(-1.5deg) scale(1.04);
 }
@@ -970,9 +984,9 @@ button { font-family: inherit; cursor: pointer; }
   line-height: 0.95;
   letter-spacing: -0.02em;
 }
-.join h2 .y { color: var(--yellow); }
-.join h2 .p { color: var(--pink); }
-.join h2 .g { color: var(--green); }
+.join h2 .y { color: var(--join-1); }
+.join h2 .p { color: var(--join-2); }
+.join h2 .g { color: var(--join-3); }
 .join p {
   margin: 1.6rem auto 2.4rem;
   max-width: 520px;
@@ -983,7 +997,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .join .btn-loud {
   display: inline-block;
-  background: var(--yellow);
+  background: var(--join-1);
   color: var(--black);
   font-family: var(--font-display);
   font-weight: 800;
@@ -994,7 +1008,7 @@ button { font-family: inherit; cursor: pointer; }
   border: none;
   transition: background 0.15s, transform 0.15s;
 }
-.join .btn-loud:hover { background: var(--pink); color: var(--white); transform: rotate(-1.5deg) scale(1.03); }
+.join .btn-loud:hover { background: var(--join-2); color: var(--white); transform: rotate(-1.5deg) scale(1.03); }
 
 /* ============================================================
    SECTION PAGE
