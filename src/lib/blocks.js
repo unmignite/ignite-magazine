@@ -11,6 +11,12 @@
 
 import { SECTIONS } from '../data/sections'
 
+// Where "Join Ignite" goes. The live value lives on the hero block in
+// site_settings.homepage and is editable in Studio → Layout; this is the
+// default a fresh install starts from, and the fallback the footer button uses
+// when there's no hero block on the homepage to read it off.
+export const JOIN_URL = 'https://forms.gle/aPxMtYdJK4GU17Qh8'
+
 export const SOURCE_CHOICES = [
   { value: 'featured', label: 'Featured articles (★ in the Studio)' },
   { value: 'latest', label: 'Latest articles, any section' },
@@ -35,7 +41,7 @@ export const BLOCK_TYPES = {
         default: 'Ignite is written, shot, edited and designed by students of the University of Nottingham Malaysia. Writers, photographers, designers — we want you.',
       },
       { key: 'joinLabel', label: 'Join slide — button', type: 'text', default: 'Join Ignite' },
-      { key: 'joinUrl', label: 'Join slide — button link', type: 'text', default: 'https://www.instagram.com/unm_ignite/' },
+      { key: 'joinUrl', label: 'Join slide — button link', type: 'text', default: JOIN_URL },
     ],
   },
   latest: {

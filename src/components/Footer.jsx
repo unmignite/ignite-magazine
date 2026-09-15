@@ -1,11 +1,19 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SECTIONS } from '../data/sections'
+import { useTheme } from '../context/ThemeContext'
+import { JOIN_URL } from '../lib/blocks'
 
 const EMAIL = 'unmignite@gmail.com'
 
 export default function Footer() {
   const [copied, setCopied] = useState(false)
+  const { homepage } = useTheme()
+
+  // Read the link off the closing slide rather than keeping a second copy, so
+  // editing it in Studio → Layout moves both buttons. Falls back to the default
+  // if the hero block is ever removed from the homepage.
+  const joinUrl = homepage.find((b) => b.type === 'hero')?.joinUrl || JOIN_URL
 
   return (
     <footer className="footer">
@@ -71,6 +79,11 @@ export default function Footer() {
             <li><a href="#contact">Contact</a></li>
             <li><Link to="/login">Editor login</Link></li>
           </ul>
+          {/* The closing slide only reaches people who sit through the reel;
+              the footer is on every page. Same form, second way in. */}
+          <a className="footer-join" href={joinUrl} target="_blank" rel="noreferrer">
+            Join Ignite
+          </a>
         </div>
       </div>
 

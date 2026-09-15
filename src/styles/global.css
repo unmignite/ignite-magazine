@@ -17,6 +17,19 @@
   --green: #8acd01;
   --orange: #fc4c00;
 
+  /* Join palette — FIXED, and not editable from the Design panel. Nothing in
+     src/lib/theme.js writes these, so no swatch can reach them.
+     Three lines that have to stay three DIFFERENT colours are one picture, not
+     a palette: pointed at the brand swatches, they collapsed to two the moment
+     Yellow and the primary accent were both set to #c06142, and the closing
+     slide read as a mistake. --join-hover is the button's hover, and the one
+     colour here borrowed from the current brand palette on purpose.
+     Used by the closing slide, the old join panel and the footer button. */
+  --join-1: #ffed00;      /* line 1, and the button at rest */
+  --join-2: #ff10a3;      /* line 2 */
+  --join-3: #8acd01;      /* line 3 */
+  --join-hover: #c06142;  /* the button on hover */
+
   /* Status palette — these colours mean something. Red says "irreversible".
      Kept separate from the brand palette so restyling never changes what a
      button communicates. Edited under "Status colours" in the Design panel. */
@@ -554,20 +567,6 @@ button { font-family: inherit; cursor: pointer; }
   line-height: 0.94;
   letter-spacing: -0.02em;
 }
-/* The invitation's colours are fixed, not theme tokens, and deliberately so.
-   Three lines that have to stay three DIFFERENT colours are not a palette —
-   they're one picture. Pointed at the editable palette, they collapsed to two
-   the moment Yellow and the primary accent were both set to #c06142, and the
-   slide read as a mistake rather than a design. Changing these is a code
-   change now, which is the point: the Design panel can't break the set.
-   Used by both the closing slide and the old join panel. */
-.hero-join,
-.join {
-  --join-1: #ffed00; /* yellow */
-  --join-2: #ff10a3; /* pink   */
-  --join-3: #8acd01; /* green  */
-}
-
 .hero-join-lines span { display: block; }
 .hero-join-lines .y { color: var(--join-1); }
 .hero-join-lines .p { color: var(--join-2); }
@@ -598,7 +597,7 @@ button { font-family: inherit; cursor: pointer; }
   transition: background 0.15s, color 0.15s, transform 0.15s;
 }
 .hero-join-btn:hover {
-  background: var(--join-2);
+  background: var(--join-hover);
   color: var(--white);
   transform: rotate(-1.5deg) scale(1.04);
 }
@@ -1008,7 +1007,7 @@ button { font-family: inherit; cursor: pointer; }
   border: none;
   transition: background 0.15s, transform 0.15s;
 }
-.join .btn-loud:hover { background: var(--join-2); color: var(--white); transform: rotate(-1.5deg) scale(1.03); }
+.join .btn-loud:hover { background: var(--join-hover); color: var(--white); transform: rotate(-1.5deg) scale(1.03); }
 
 /* ============================================================
    SECTION PAGE
@@ -1500,6 +1499,29 @@ button { font-family: inherit; cursor: pointer; }
 /* The same swatch the contact links and the legal row already hover to, so the
    whole footer answers in one colour and re-theming it moves all three. */
 .footer li a:hover { color: var(--yellow); }
+
+/* Outlined rather than filled: the footer is otherwise quiet text, and a solid
+   block of yellow down here would shout over the thing it sits under. The
+   border carries it at rest and the fill arrives on hover — the same invert
+   the menu and the carousel arrows use. Fills with the join button's own hover
+   colour, so both ways into the form behave alike. */
+.footer-join {
+  display: inline-block;
+  margin-top: 1.2rem;
+  padding: 0.9em 1.9em 0.8em;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  color: var(--white);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.footer-join:hover {
+  background-color: var(--join-hover);
+  border-color: var(--join-hover);
+}
 
 .footer-legal {
   display: flex;
