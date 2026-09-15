@@ -25,9 +25,13 @@
      slide read as a mistake. --join-hover is the button's hover, and the one
      colour here borrowed from the current brand palette on purpose.
      Used by the closing slide, the old join panel and the footer button. */
-  --join-1: #ffed00;      /* line 1, and the button at rest */
+  --join-1: #c06142;      /* line 1 */
   --join-2: #ff10a3;      /* line 2 */
   --join-3: #8acd01;      /* line 3 */
+  /* The button keeps its own two. It can't share line 1's colour any more:
+     that's now the same orange it hovers to, and a button that hovers to the
+     colour it already is has no hover at all. */
+  --join-btn: #ffed00;    /* the button at rest */
   --join-hover: #c06142;  /* the button on hover */
 
   /* Status palette — these colours mean something. Red says "irreversible".
@@ -586,7 +590,7 @@ button { font-family: inherit; cursor: pointer; }
 .hero-join-btn {
   display: inline-block;
   margin-top: clamp(1.6rem, 3.5vw, 2.6rem);
-  background: var(--join-1);
+  background: var(--join-btn);
   color: var(--black);
   font-family: var(--font-display);
   font-weight: 800;
@@ -996,7 +1000,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .join .btn-loud {
   display: inline-block;
-  background: var(--join-1);
+  background: var(--join-btn);
   color: var(--black);
   font-family: var(--font-display);
   font-weight: 800;
