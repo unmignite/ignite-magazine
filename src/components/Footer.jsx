@@ -55,6 +55,18 @@ export default function Footer() {
           >
             @unm_ignite on Instagram
           </a>
+          {/* The share link this came from carried ?_r and ?_t — TikTok's
+              share-tracking parameters, where _t is a token tied to whoever
+              copied it. Stripped: the bare profile URL is what belongs on
+              every page of a public site. */}
+          <a
+            className="footer-social"
+            href="https://www.tiktok.com/@unmignite"
+            target="_blank"
+            rel="noreferrer"
+          >
+            @unmignite on TikTok
+          </a>
         </div>
 
         <div>
