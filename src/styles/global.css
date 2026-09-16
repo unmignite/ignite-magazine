@@ -562,22 +562,31 @@ button { font-family: inherit; cursor: pointer; }
    muddy the type. */
 .hero-join::after { display: none; }
 
-/* Wide enough that each of the three lines holds on one line at desktop sizes —
-   at 1100px "Embrace the unknown." wrapped and the other two didn't. */
+/* Sized so each line of the statement holds on one line at desktop widths.
+   Measured rather than guessed: "Home of independent reporting," wants about
+   16.6px of width for every 1px of font size, so the old 92px asked for
+   1524px in a 1121px column and broke into three. 5vw with a 4.4rem cap keeps
+   the longest line inside the column with a little room to spare. Below about
+   430px it wraps, which is the right trade for a sentence this long on a
+   phone -- shrinking the type further to avoid it would be worse. */
 .hero-join-inner { text-align: center; max-width: 1240px; }
 
+/* White, and one colour. The three tinted lines belonged to three separate
+   sentences — "Embrace the unknown. / Explore the unseen. / Discover the
+   unheard." — where the colour change landed on a full stop. This is one
+   sentence, so changing colour mid-clause would break it where the grammar
+   doesn't. The orange now sits on the button alone.
+   --join-1/2/3 are still live: the banner block type uses them. */
 .hero-join-lines {
   font-family: var(--font-display);
   font-weight: 900;
   text-transform: uppercase;
-  font-size: clamp(2rem, 7.2vw, 6rem);
+  font-size: clamp(1.5rem, 5vw, 4.4rem);
   line-height: 0.94;
   letter-spacing: -0.02em;
+  color: var(--white);
 }
 .hero-join-lines span { display: block; }
-.hero-join-lines .y { color: var(--join-1); }
-.hero-join-lines .p { color: var(--join-2); }
-.hero-join-lines .g { color: var(--join-3); }
 
 .hero-join-text {
   margin: clamp(1.2rem, 3vw, 2rem) auto 0;
