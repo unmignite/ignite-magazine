@@ -38,7 +38,7 @@ export const BLOCK_TYPES = {
         key: 'joinText',
         label: 'Join slide — supporting text',
         type: 'textarea',
-        default: 'Ignite is written, shot, edited and designed by students of the University of Nottingham Malaysia. Writers, photographers, designers — we want you.',
+        default: 'Home of independent reporting, creative projects, and cultural critique at UNM',
       },
       { key: 'joinLabel', label: 'Join slide — button', type: 'text', default: 'Join Ignite' },
       { key: 'joinUrl', label: 'Join slide — button link', type: 'text', default: JOIN_URL },
@@ -92,7 +92,7 @@ export const BLOCK_TYPES = {
       { key: 'line3', label: 'Line 3', type: 'text', default: 'Discover the unheard.' },
       { key: 'text', label: 'Supporting text', type: 'textarea', default: 'Ignite is written, shot, edited and designed by students of the University of Nottingham Malaysia. Writers, photographers, designers — we want you.' },
       { key: 'buttonLabel', label: 'Button label', type: 'text', default: 'Join Ignite' },
-      { key: 'buttonUrl', label: 'Button link', type: 'text', default: 'https://www.instagram.com/unm_ignite/' },
+      { key: 'buttonUrl', label: 'Button link', type: 'text', default: JOIN_URL },
     ],
   },
 }

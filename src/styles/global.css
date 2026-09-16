@@ -22,17 +22,18 @@
      Three lines that have to stay three DIFFERENT colours are one picture, not
      a palette: pointed at the brand swatches, they collapsed to two the moment
      Yellow and the primary accent were both set to #c06142, and the closing
-     slide read as a mistake. --join-hover is the button's hover, and the one
-     colour here borrowed from the current brand palette on purpose.
+     slide read as a mistake.
      Used by the closing slide, the old join panel and the footer button. */
   --join-1: #c06142;      /* line 1 */
   --join-2: #ff10a3;      /* line 2 */
   --join-3: #8acd01;      /* line 3 */
-  /* The button keeps its own two. It can't share line 1's colour any more:
-     that's now the same orange it hovers to, and a button that hovers to the
-     colour it already is has no hover at all. */
-  --join-btn: #ffed00;    /* the button at rest */
-  --join-hover: #c06142;  /* the button on hover */
+  /* The call to action, in both the places it appears: the fill of the big
+     button on the slide, and what the footer's outlined one fills with on
+     hover. The big button can no longer hover to this now that it IS this, so
+     that hover inverts to white instead. Orange to yellow would have been the
+     obvious alternative and is a weak signal for a red-green colour
+     deficiency, where the two sit close together. */
+  --join-cta: #c06142;
 
   /* Status palette — these colours mean something. Red says "irreversible".
      Kept separate from the brand palette so restyling never changes what a
@@ -171,13 +172,15 @@ button { font-family: inherit; cursor: pointer; }
    NAV
    ============================================================ */
 
+/* No rule under the bar. The header is opaque, so copy scrolling beneath it
+   simply stops being visible -- the line was drawing a boundary that the solid
+   white already makes, and it tracked the whole page as you scrolled. */
 .nav {
   position: sticky;
   top: 0;
   z-index: 200;
   background: var(--white);
-  border-bottom: 2px solid var(--black);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s ease;
 }
 .adminbar + .nav { top: 30px; }
 
@@ -186,7 +189,7 @@ button { font-family: inherit; cursor: pointer; }
 .nav.overlay { position: fixed; left: 0; right: 0; }
 
 /* Transparent, white type. Applies over the hero and over the open menu. */
-.nav.light { background: transparent; border-bottom-color: transparent; }
+.nav.light { background: transparent; }
 .nav.light .logo-ink-dark { display: none; }
 .nav.light .logo-ink-light { display: block; }
 .nav.light .burger i { background: var(--white); }
@@ -583,14 +586,14 @@ button { font-family: inherit; cursor: pointer; }
   font-style: italic;
   font-size: clamp(0.95rem, 1.3vw, 1.1rem);
   line-height: 1.6;
-  color: rgba(255,255,255,0.75);
-  text-wrap: pretty; /* keeps "we want you." off a line of its own */
+  color: var(--white);
+  text-wrap: pretty; /* no orphan on the last line */
 }
 
 .hero-join-btn {
   display: inline-block;
   margin-top: clamp(1.6rem, 3.5vw, 2.6rem);
-  background: var(--join-btn);
+  background: var(--join-cta);
   color: var(--black);
   font-family: var(--font-display);
   font-weight: 800;
@@ -601,8 +604,8 @@ button { font-family: inherit; cursor: pointer; }
   transition: background 0.15s, color 0.15s, transform 0.15s;
 }
 .hero-join-btn:hover {
-  background: var(--join-hover);
-  color: var(--white);
+  background: var(--white);
+  color: var(--black);
   transform: rotate(-1.5deg) scale(1.04);
 }
 
@@ -996,11 +999,11 @@ button { font-family: inherit; cursor: pointer; }
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 1.05rem;
-  color: rgba(255,255,255,0.75);
+  color: var(--white);
 }
 .join .btn-loud {
   display: inline-block;
-  background: var(--join-btn);
+  background: var(--join-cta);
   color: var(--black);
   font-family: var(--font-display);
   font-weight: 800;
@@ -1011,7 +1014,7 @@ button { font-family: inherit; cursor: pointer; }
   border: none;
   transition: background 0.15s, transform 0.15s;
 }
-.join .btn-loud:hover { background: var(--join-hover); color: var(--white); transform: rotate(-1.5deg) scale(1.03); }
+.join .btn-loud:hover { background: var(--white); color: var(--black); transform: rotate(-1.5deg) scale(1.03); }
 
 /* ============================================================
    SECTION PAGE
@@ -1032,7 +1035,7 @@ button { font-family: inherit; cursor: pointer; }
   font-family: var(--font-serif);
   font-style: italic;
   font-size: clamp(1rem, 1.6vw, 1.25rem);
-  color: rgba(255,255,255,0.75);
+  color: var(--white);
   max-width: 560px;
 }
 /* ---------- must read ----------
@@ -1260,7 +1263,7 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.75);
+  color: var(--white);
   background: rgba(0,0,0,0.45);
   padding: 0.3em 0.7em;
 }
@@ -1523,8 +1526,8 @@ button { font-family: inherit; cursor: pointer; }
   transition: background-color 0.15s, border-color 0.15s;
 }
 .footer-join:hover {
-  background-color: var(--join-hover);
-  border-color: var(--join-hover);
+  background-color: var(--join-cta);
+  border-color: var(--join-cta);
 }
 
 .footer-legal {
