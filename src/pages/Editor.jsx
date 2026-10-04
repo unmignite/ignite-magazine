@@ -14,7 +14,16 @@ import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import { SECTIONS } from '../data/sections'
 import { uploadImage } from '../lib/supabase'
+import { ROLE_CHOICES, creditsForEditing, creditList } from '../lib/credits'
 import NotFound from './NotFound'
+
+// Each credit row carries a key of its own. Indexes won't do: remove the middle
+// of three rows and every row below it shifts up, so React would match the
+// wrong input to the wrong credit and leave the cursor in the wrong box. The
+// key never reaches the database — creditList() keeps only role and name.
+let creditSeq = 0
+const newCreditRow = (row) => ({ role: '', name: '', ...row, key: `c${creditSeq++}` })
+const withRowKeys = (rows) => rows.map(newCreditRow)
 
 const PALETTE = [
   { name: 'Black', value: '#0a0a0a' },
@@ -181,6 +190,7 @@ function EditorForm({ existing }) {
   const [tags, setTags] = useState((existing?.tags || []).join(', '))
   const [featured, setFeatured] = useState(existing?.featured || false)
   const [status, setStatus] = useState(existing?.status || 'draft')
+  const [credits, setCredits] = useState(() => withRowKeys(creditsForEditing(existing?.credits)))
   const [savedFlash, setSavedFlash] = useState(false)
   const [saveError, setSaveError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -214,6 +224,18 @@ function EditorForm({ existing }) {
     }
   }
 
+  // Credits are edited by index rather than by role, because two rows may carry
+  // the same role — two co-editors is the case that started all this.
+  const updateCredit = (i, key, value) =>
+    setCredits((rows) => rows.map((r, n) => (n === i ? { ...r, [key]: value } : r)))
+
+  const addCredit = () => setCredits((rows) => [...rows, newCreditRow()])
+
+  // Removing the last row would leave no way back to adding one, so the panel
+  // always keeps an empty row to type into.
+  const removeCredit = (i) =>
+    setCredits((rows) => (rows.length > 1 ? rows.filter((_, n) => n !== i) : [newCreditRow()]))
+
   const save = async () => {
     if (!title.trim()) return alert('Give the article a title first.')
     if (!editor) return
@@ -242,7 +264,9 @@ function EditorForm({ existing }) {
       // Carried through untouched — it's toggled from the Studio list.
       mustRead: existing?.mustRead || false,
       status,
-      credits: existing?.credits || { writer: author.trim() || user.name, editor: user.name, chief: '' },
+      // Only what was actually typed. Blank rows are dropped rather than saved
+      // as empty credits, and nothing is inferred from who is logged in.
+      credits: creditList(credits),
       body: editor.getHTML(),
     }
 
@@ -340,6 +364,53 @@ function EditorForm({ existing }) {
           <div className="field">
             <label>Author</label>
             <input value={author} onChange={(e) => setAuthor(e.target.value)} />
+            <p className="hint">The byline, on cards and at the top of the article.</p>
+          </div>
+
+          {/* The masthead at the foot of the article. A list rather than fixed
+              writer/editor/chief boxes, because an article can have two
+              editors, a photographer and an illustrator — and because fixed
+              boxes meant the editor was never visible enough to correct. */}
+          <div className="field">
+            <label>Credits</label>
+            {credits.map((c, i) => (
+              <div className="credit-row" key={c.key}>
+                <input
+                  list="credit-roles"
+                  className="credit-role"
+                  value={c.role}
+                  onChange={(e) => updateCredit(i, 'role', e.target.value)}
+                  placeholder="Role"
+                  spellCheck="false"
+                />
+                <input
+                  className="credit-name"
+                  value={c.name}
+                  onChange={(e) => updateCredit(i, 'name', e.target.value)}
+                  placeholder="Name"
+                />
+                <button
+                  type="button"
+                  className="credit-remove"
+                  onClick={() => removeCredit(i)}
+                  title="Remove this credit"
+                  aria-label={`Remove ${c.role || 'credit'}`}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            {/* Suggestions, not a fixed menu — the field still takes any text. */}
+            <datalist id="credit-roles">
+              {ROLE_CHOICES.map((r) => <option key={r} value={r} />)}
+            </datalist>
+            <button type="button" className="btn-ghost credit-add" onClick={addCredit}>
+              + Add credit
+            </button>
+            <p className="hint">
+              Anyone left blank is simply not shown. Nothing here is filled in from
+              your login — an article you type up is often not one you wrote or edited.
+            </p>
           </div>
           <div className="field">
             <label>Publish date</label>

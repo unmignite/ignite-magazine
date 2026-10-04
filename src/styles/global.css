@@ -1609,6 +1609,38 @@ button { font-family: inherit; cursor: pointer; }
 }
 .field .hint { margin-top: 0.4rem; font-size: 0.72rem; color: var(--grey); }
 
+/* One credit: the role and the name get a line each rather than sharing one.
+   The settings panel is 330px wide, so three columns left about 107px for the
+   role -- enough to type "Writer / Jou" and lose sight of the start of it.
+   Stacked, each field gets the full width and the remove button tucks up
+   beside the role. */
+.credit-row {
+  display: grid;
+  grid-template-columns: 1fr 2rem;
+  grid-template-areas:
+    "role remove"
+    "name name";
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+.credit-role { grid-area: role; font-size: 0.78rem; }
+.credit-name { grid-area: name; }
+.credit-row input { min-width: 0; }
+/* Quiet until you reach for it: there is one on every row, and a column of red
+   crosses down the panel would read as an error state rather than a control. */
+.credit-remove {
+  grid-area: remove;
+  border: 2px solid var(--grey-light);
+  background: var(--white);
+  color: var(--grey);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+.credit-remove:hover { border-color: var(--danger); color: var(--danger); }
+.credit-add { margin-top: 0.2rem; font-size: 0.7rem; padding: 0.5em 1em; }
+
 .btn-primary {
   background: var(--black);
   color: var(--white);

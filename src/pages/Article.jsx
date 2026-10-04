@@ -7,6 +7,7 @@ import { accentVars } from '../data/sections'
 import ShareBar from '../components/ShareBar'
 import { recordView } from '../lib/analytics'
 import NotFound from './NotFound'
+import { creditList } from '../lib/credits'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -48,6 +49,9 @@ export default function Article() {
   if (!article || (article.status !== 'published' && !user)) return <NotFound />
 
   const sec = sectionOf(article)
+  // Normalised here, so the articles still holding the old writer/editor/chief
+  // object render the same as ones saved since credits became a list.
+  const credits = creditList(article.credits)
   const related = articles
     .filter((a) => a.section === article.section && a.id !== article.id && a.status === 'published')
     .slice(0, 3)
@@ -84,11 +88,11 @@ export default function Article() {
         dangerouslySetInnerHTML={{ __html: captionImages(article.body) }}
       />
 
-      {article.credits && (
+      {credits.length > 0 && (
         <div className="article-credits">
-          {article.credits.writer && (<div><b>Writer / Journalist:</b> {article.credits.writer}</div>)}
-          {article.credits.editor && (<div><b>Editor:</b> {article.credits.editor}</div>)}
-          {article.credits.chief && (<div><b>Co-Editor-in-Chief:</b> {article.credits.chief}</div>)}
+          {credits.map((c, i) => (
+            <div key={`${c.role}-${c.name}-${i}`}><b>{c.role}:</b> {c.name}</div>
+          ))}
         </div>
       )}
 
