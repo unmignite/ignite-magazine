@@ -67,6 +67,14 @@ export default function Footer() {
           >
             @unmignite on TikTok
           </a>
+          <a
+            className="footer-social"
+            href="https://www.linkedin.com/company/unm-ignite"
+            target="_blank"
+            rel="noreferrer"
+          >
+            UNM Ignite on LinkedIn
+          </a>
         </div>
 
         <div>
