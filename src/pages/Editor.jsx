@@ -10,6 +10,9 @@ import { Color } from '@tiptap/extension-color'
 import FontFamily from '@tiptap/extension-font-family'
 import TextAlign from '@tiptap/extension-text-align'
 import Placeholder from '@tiptap/extension-placeholder'
+import { TextSelection } from '@tiptap/pm/state'
+import { Fragment, Slice } from '@tiptap/pm/model'
+import { dropPoint } from '@tiptap/pm/transform'
 import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import { SECTIONS } from '../data/sections'
@@ -46,6 +49,65 @@ const slugify = (t) =>
   t.toLowerCase().replace(/[’'"“”.,!?:;()]/g, '').replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
 
+// The credit is stored on the image itself, as its alt text, and the article
+// page draws the caption from there. It used to be inserted as a separate
+// italic paragraph, which looked different from every migrated article and
+// came adrift from its image the moment anyone edited around it.
+const askCredit = () =>
+  (window.prompt('Photo credit (optional — shown under the image)') || '').trim()
+
+const imageFiles = (data) => Array.from(data?.files || []).filter((f) => f.type.startsWith('image/'))
+
+// Where the image with this src sits now. Found by src rather than kept as a
+// position: the writer keeps typing while it uploads, and every keystroke above
+// it moves it.
+function findImage(doc, src) {
+  let at = null
+  doc.descendants((n, p) => {
+    if (n.type.name === 'image' && n.attrs.src === src) at = p
+  })
+  return at
+}
+
+// Pasted and dropped images go to the same bucket as the toolbar's upload. Each
+// shows at once from a local blob: URL, dimmed while it uploads, then has its
+// src swapped for the bucket URL — or is taken out again if the upload fails,
+// so a blob: URL, which dies with the tab, never reaches the database.
+function insertImageFiles(view, files, pos) {
+  files.forEach(async (file) => {
+    const local = URL.createObjectURL(file)
+    const { schema, tr } = view.state
+    const node = schema.nodes.image.create({ src: local, alt: '' })
+    if (pos == null) tr.replaceSelectionWith(node)
+    // Dropped mid-paragraph, an image would split it and leave an empty
+    // paragraph behind; dropPoint moves it to the nearest gap between blocks.
+    else tr.insert(dropPoint(tr.doc, pos, new Slice(Fragment.from(node), 0, 0)) ?? pos, node)
+    // Left alone, the new image stays selected and the next key typed replaces
+    // it. Put the cursor after it, in a paragraph of its own if there isn't one.
+    const end = findImage(tr.doc, local) + node.nodeSize
+    if (!tr.doc.resolve(end).nodeAfter?.isTextblock) tr.insert(end, schema.nodes.paragraph.create())
+    view.dispatch(tr.setSelection(TextSelection.create(tr.doc, end + 1)))
+
+    const replace = (attrs) => {
+      if (view.isDestroyed) return
+      const at = findImage(view.state.doc, local)
+      if (at == null) return
+      const t = view.state.tr
+      view.dispatch(attrs ? t.setNodeMarkup(at, undefined, { ...t.doc.nodeAt(at).attrs, ...attrs }) : t.delete(at, at + 1))
+    }
+
+    try {
+      const src = await uploadImage(file)
+      replace({ src, alt: askCredit() })
+    } catch (err) {
+      replace(null)
+      alert(err.message)
+    } finally {
+      URL.revokeObjectURL(local)
+    }
+  })
+}
+
 function Toolbar({ editor }) {
   const fileInputRef = useRef(null)
   if (!editor) return null
@@ -55,13 +117,6 @@ function Toolbar({ editor }) {
     const url = window.prompt('Link URL (https://…)')
     if (url) editor.chain().focus().setLink({ href: url }).run()
   }
-
-  // The credit is stored on the image itself, as its alt text, and the article
-  // page draws the caption from there. It used to be inserted as a separate
-  // italic paragraph, which looked different from every migrated article and
-  // came adrift from its image the moment anyone edited around it.
-  const askCredit = () =>
-    (window.prompt('Photo credit (optional — shown under the image)') || '').trim()
 
   const addImageByUrl = () => {
     const url = window.prompt('Image URL')
@@ -208,6 +263,22 @@ function EditorForm({ existing }) {
       Placeholder.configure({ placeholder: 'Start writing the story…' }),
     ],
     content: existing?.body || '',
+    editorProps: {
+      handlePaste: (view, event) => {
+        const files = imageFiles(event.clipboardData)
+        // Word and Google Docs put a picture of the copied selection on the
+        // clipboard beside its text. The text is what was meant.
+        if (!files.length || event.clipboardData.getData('text/plain')) return false
+        insertImageFiles(view, files)
+        return true
+      },
+      handleDrop: (view, event, _slice, moved) => {
+        const files = imageFiles(event.dataTransfer)
+        if (moved || !files.length) return false
+        insertImageFiles(view, files, view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos)
+        return true
+      },
+    },
   })
 
   const onCoverUpload = async (e) => {
@@ -239,6 +310,7 @@ function EditorForm({ existing }) {
   const save = async () => {
     if (!title.trim()) return alert('Give the article a title first.')
     if (!editor) return
+    if (editor.getHTML().includes('src="blob:')) return alert('An image is still uploading — save again once it has finished.')
 
     let slug = existing?.slug
     if (!slug) {

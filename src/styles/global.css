@@ -2024,6 +2024,8 @@ button { font-family: inherit; cursor: pointer; }
 }
 .editor-body .tiptap img { max-width: 100%; }
 .editor-body .tiptap img.ProseMirror-selectednode { outline: 4px solid var(--pink); }
+/* Pasted or dropped, still uploading — see insertImageFiles in Editor.jsx. */
+.editor-body .tiptap img[src^="blob:"] { opacity: 0.4; }
 .editor-body .tiptap ul, .editor-body .tiptap ol { padding-left: 1.4em; }
 .editor-body .tiptap a { border-bottom: 2px solid var(--pink); }
 .editor-body .tiptap p.is-editor-empty:first-child::before {
