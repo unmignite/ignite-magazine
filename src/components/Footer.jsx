@@ -73,7 +73,7 @@ export default function Footer() {
             target="_blank"
             rel="noreferrer"
           >
-            UNM Ignite on LinkedIn
+            UNM IGNITE on LinkedIn
           </a>
         </div>
 
