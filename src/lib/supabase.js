@@ -19,11 +19,17 @@ export const IMAGE_BUCKET = 'article-images'
 let hasMustRead = false
 export const mustReadReady = () => hasMustRead
 
+// old_slugs arrives with supabase/old-slugs.sql, and is held back the same way.
+let hasOldSlugs = false
+export const oldSlugsReady = () => hasOldSlugs
+
 export function rowToArticle(row) {
   if ('must_read' in row) hasMustRead = true
+  if ('old_slugs' in row) hasOldSlugs = true
   return {
     id: row.id,
     slug: row.slug,
+    oldSlugs: row.old_slugs ?? [],
     title: row.title,
     dek: row.dek ?? '',
     section: row.section,
@@ -43,6 +49,7 @@ export function rowToArticle(row) {
 
 export const articleToRow = (a) => ({
   slug: a.slug,
+  ...(hasOldSlugs ? { old_slugs: a.oldSlugs ?? [] } : {}),
   title: a.title,
   dek: a.dek ?? '',
   section: a.section,

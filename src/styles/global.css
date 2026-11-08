@@ -1938,6 +1938,10 @@ button { font-family: inherit; cursor: pointer; }
 /* Struck words in a title, wherever it is shown. Heavy display type swallows
    the browser's hairline strike, so it is drawn in proportion to the text. */
 .title-strike { text-decoration-thickness: 0.08em; }
+.slug-input { display: flex; align-items: center; gap: 0.25rem; }
+.slug-input span { color: var(--grey); font-size: 0.85rem; white-space: nowrap; }
+.slug-input input { flex: 1; min-width: 0; }
+.slug-match { margin-top: 0.5rem; }
 .dek-input {
   width: 100%;
   border: none;

@@ -108,8 +108,14 @@ export function StoreProvider({ children }) {
       await supabase.auth.signOut()
     },
 
+    // A URL the article used to have still finds it, so links shared before a
+    // retitle keep working; the article page then redirects to the current one.
+    // Current slugs are checked first, in case one has since been reused.
     getArticle(idOrSlug) {
-      return articles.find((a) => a.id === idOrSlug || a.slug === idOrSlug)
+      return (
+        articles.find((a) => a.id === idOrSlug || a.slug === idOrSlug) ||
+        articles.find((a) => a.oldSlugs?.includes(idOrSlug))
+      )
     },
 
     // Insert when the article has no database id yet, update otherwise.

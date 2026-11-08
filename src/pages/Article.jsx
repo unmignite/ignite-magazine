@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import ArticleCard, { sectionOf } from '../components/ArticleCard'
@@ -48,6 +48,8 @@ export default function Article() {
   }, [article?.id, article?.status, user])
 
   if (!article || (article.status !== 'published' && !user)) return <NotFound />
+  // Reached by an old URL (or by id): send the reader to the one it has now.
+  if (slug !== article.slug) return <Navigate to={`/article/${article.slug}`} replace />
 
   const sec = sectionOf(article)
   // Normalised here, so the articles still holding the old writer/editor/chief

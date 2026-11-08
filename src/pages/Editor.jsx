@@ -16,7 +16,7 @@ import { dropPoint } from '@tiptap/pm/transform'
 import { useStore } from '../context/StoreContext'
 import { can } from '../lib/roles'
 import { SECTIONS } from '../data/sections'
-import { uploadImage } from '../lib/supabase'
+import { uploadImage, oldSlugsReady } from '../lib/supabase'
 import { ROLE_CHOICES, creditsForEditing, creditList } from '../lib/credits'
 import { TitleText, plainTitle, toggleStrike } from '../lib/title'
 import NotFound from './NotFound'
@@ -237,6 +237,7 @@ function EditorForm({ existing }) {
 
   const [title, setTitle] = useState(existing?.title || '')
   const titleRef = useRef(null)
+  const [slugInput, setSlugInput] = useState(existing?.slug || '')
   const [dek, setDek] = useState(existing?.dek || '')
   const [section, setSection] = useState(existing?.section || 'music')
   const [author, setAuthor] = useState(existing?.author || user.name)
@@ -328,17 +329,30 @@ function EditorForm({ existing }) {
     if (!editor) return
     if (editor.getHTML().includes('src="blob:')) return alert('An image is still uploading — save again once it has finished.')
 
-    let slug = existing?.slug
-    if (!slug) {
-      const base = slugify(plainTitle(title)) || 'untitled'
-      slug = base
-      let i = 2
-      while (articles.some((a) => a.slug === slug)) slug = `${base}-${i++}`
+    // The URL is made from the title when the box is left blank. A URL another
+    // article has, or once had, gets a number added rather than taking over
+    // its links.
+    const base = slugify(slugInput) || existing?.slug || slugify(plainTitle(title)) || 'untitled'
+    const taken = (s) => articles.some((a) => a.id !== existing?.id && (a.slug === s || a.oldSlugs?.includes(s)))
+    let slug = base
+    let i = 2
+    while (taken(slug)) slug = `${base}-${i++}`
+
+    // Links to the old URL are already out there, so it is kept and redirects
+    // here. Without the old_slugs column there is nowhere to keep it.
+    let oldSlugs = existing?.oldSlugs || []
+    if (existing && slug !== existing.slug) {
+      if (
+        !oldSlugsReady() &&
+        !window.confirm('Links to the old URL will stop working until supabase/old-slugs.sql has been run. Change the URL anyway?')
+      ) return
+      oldSlugs = [...oldSlugs.filter((s) => s !== slug), existing.slug]
     }
 
     const article = {
       id: existing?.id || null, // null → the database generates the id
       slug,
+      oldSlugs,
       title: title.trim(),
       dek: dek.trim(),
       section,
@@ -367,6 +381,7 @@ function EditorForm({ existing }) {
       setSaveError(res.error)
       return
     }
+    setSlugInput(res.article.slug)
     setSavedFlash(true)
     setTimeout(() => setSavedFlash(false), 2500)
     if (isNew) navigate(`/studio/edit/${res.article.id}`, { replace: true })
@@ -457,6 +472,31 @@ function EditorForm({ existing }) {
           <div className="field">
             <label>Cover credit</label>
             <input value={coverCredit} onChange={(e) => setCoverCredit(e.target.value)} placeholder="Photographer / source" />
+          </div>
+
+          <div className="field">
+            <label>URL</label>
+            <div className="slug-input">
+              <span>/article/</span>
+              <input
+                value={slugInput}
+                onChange={(e) => setSlugInput(e.target.value)}
+                onBlur={() => setSlugInput((s) => slugify(s))}
+                placeholder={slugify(plainTitle(title)) || 'made-from-the-title'}
+              />
+            </div>
+            {slugInput && slugify(plainTitle(title)) && slugInput !== slugify(plainTitle(title)) && (
+              <button type="button" className="btn-ghost slug-match" onClick={() => setSlugInput(slugify(plainTitle(title)))}>
+                Match title
+              </button>
+            )}
+            <p className="hint">
+              {!existing
+                ? 'Left blank, it is made from the title.'
+                : oldSlugsReady()
+                  ? 'Change it and the old URL redirects here.'
+                  : 'Changing it breaks links to the old URL until supabase/old-slugs.sql has been run.'}
+            </p>
           </div>
 
           <div className="field">
