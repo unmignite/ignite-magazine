@@ -4,6 +4,7 @@ import { useStore } from '../context/StoreContext'
 import { fetchOverview } from '../lib/analytics'
 import { DailyChart, BarList, StatTile } from '../components/Charts'
 import { sectionBySlug } from '../data/sections'
+import { plainTitle } from '../lib/title'
 
 const RANGES = [
   { days: 7, label: '7 days' },
@@ -25,7 +26,12 @@ export default function Analytics() {
       setLoading(true)
       const res = await fetchOverview(days)
       if (!active) return
-      if (res.ok) { setData(res.data); setError('') } else setError(res.error)
+      if (res.ok) {
+        // Titles come back from the database with their ~~strike~~ markers.
+        const top_articles = res.data.top_articles?.map((a) => ({ ...a, title: plainTitle(a.title) }))
+        setData({ ...res.data, top_articles })
+        setError('')
+      } else setError(res.error)
       setLoading(false)
     })()
     return () => { active = false }

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { SECTIONS } from '../data/sections'
+import { plainTitle } from '../lib/title'
 
 // Reader-facing search and filtering over a list of articles.
 //
@@ -19,7 +20,7 @@ const normalise = (s) =>
 
 // Titles often open with a quote mark ("‘Wicked’…"). Readers expect those filed
 // under the first letter of the actual word, not bunched under punctuation.
-const sortKey = (title) => (title || '').replace(/^[^\p{L}\p{N}]+/u, '').trim()
+const sortKey = (title) => plainTitle(title).replace(/^[^\p{L}\p{N}]+/u, '').trim()
 
 export function useArticleSearch(articles) {
   const [query, setQuery] = useState('')
@@ -54,7 +55,7 @@ export function useArticleSearch(articles) {
       if (tag && !(a.tags || []).includes(tag)) return false
       if (!terms.length) return true
       // Every word must appear somewhere in the article's searchable text.
-      const haystack = normalise([a.title, a.dek, a.author, (a.tags || []).join(' ')].join(' '))
+      const haystack = normalise([plainTitle(a.title), a.dek, a.author, (a.tags || []).join(' ')].join(' '))
       return terms.every((t) => haystack.includes(t))
     }
 

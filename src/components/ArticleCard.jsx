@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { SECTIONS, accentVars } from '../data/sections'
+import { TitleText, plainTitle } from '../lib/title'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -22,11 +23,11 @@ export default function ArticleCard({ article, variant = 'grid' }) {
   return (
     <Link to={`/article/${article.slug}`} className={cls} style={accentVars(sec)}>
       <div className="card-img">
-        <img src={article.cover} alt={article.title} loading="lazy" />
+        <img src={article.cover} alt={plainTitle(article.title)} loading="lazy" />
       </div>
       <div className="card-body">
         {variant !== 'row' && <span className="chip">{sec.name}</span>}
-        <h3 className="card-title">{article.title}</h3>
+        <h3 className="card-title"><TitleText title={article.title} /></h3>
         {(variant === 'lead' || variant === 'grid') && article.dek && (
           <p className="card-dek">{article.dek}</p>
         )}

@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext'
 import { can } from '../lib/roles'
 import { BLOCK_TYPES, SOURCE_CHOICES, newBlock, sourceLabel, slotsFor } from '../lib/blocks'
 import { uploadImage } from '../lib/supabase'
+import { plainTitle } from '../lib/title'
 
 export default function LayoutEditor() {
   const { user, articles } = useStore()
@@ -186,7 +187,7 @@ function BlockField({ field, value, onChange, block, articles }) {
               <select value={picks[s.key] || ''} onChange={(e) => set(s.key, e.target.value)}>
                 <option value="">Automatic</option>
                 {choices.map((a) => (
-                  <option key={a.id} value={a.id}>{a.title}</option>
+                  <option key={a.id} value={a.id}>{plainTitle(a.title)}</option>
                 ))}
               </select>
             </div>

@@ -1926,6 +1926,18 @@ button { font-family: inherit; cursor: pointer; }
   background: transparent;
 }
 .title-input:focus { outline: none; border-bottom-color: var(--pink); }
+.title-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0 0.25rem;
+  font-size: 0.85rem;
+  color: var(--grey);
+}
+.title-preview { font-family: var(--font-display); font-weight: 900; text-transform: uppercase; color: var(--black); }
+/* Struck words in a title, wherever it is shown. Heavy display type swallows
+   the browser's hairline strike, so it is drawn in proportion to the text. */
+.title-strike { text-decoration-thickness: 0.08em; }
 .dek-input {
   width: 100%;
   border: none;

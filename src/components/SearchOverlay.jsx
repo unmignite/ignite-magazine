@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { sectionOf } from './ArticleCard'
 import { useArticleSearch } from './ArticleSearch'
+import { TitleText } from '../lib/title'
 
 const MAX_RESULTS = 8
 
@@ -71,7 +72,7 @@ export default function SearchOverlay({ onClose }) {
                     <img src={a.cover} alt="" loading="lazy" />
                     <span className="search-result-body">
                       <span className="search-result-kicker">{sectionOf(a).name}</span>
-                      <span className="search-result-title">{a.title}</span>
+                      <span className="search-result-title"><TitleText title={a.title} /></span>
                       <span className="search-result-meta">
                         By {a.author} · {fmtDate(a.date)}
                       </span>

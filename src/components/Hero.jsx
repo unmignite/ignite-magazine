@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sectionOf } from './ArticleCard'
 import { useTheme } from '../context/ThemeContext'
+import { TitleText, plainTitle } from '../lib/title'
 
 // Slide duration is themeable (Studio → Design); the progress bars stay in
 // sync because the same value drives their CSS fill animation.
@@ -43,7 +44,7 @@ export default function Hero({ articles, block = {} }) {
         {slides.map((s, i) =>
           s.kind === 'article' ? (
             <div key={s.key} className={`hero-slide ${i === index ? 'active' : ''}`}>
-              <img src={s.article.cover} alt={s.article.title} />
+              <img src={s.article.cover} alt={plainTitle(s.article.title)} />
             </div>
           ) : (
             <div key={s.key} className={`hero-slide hero-join ${i === index ? 'active' : ''}`}>
@@ -90,7 +91,7 @@ export default function Hero({ articles, block = {} }) {
           <div className="hero-copy" key={current.article.id}>
             <span className="hero-kicker">{sec.name}</span>
             <Link className="hero-title display" to={`/article/${current.article.slug}`}>
-              {current.article.title}
+              <TitleText title={current.article.title} />
             </Link>
             <p className="hero-dek">{current.article.dek}</p>
             <p className="hero-byline">
@@ -104,7 +105,7 @@ export default function Hero({ articles, block = {} }) {
             <button
               key={s.key}
               className={i === index ? 'current' : i < index ? 'done' : ''}
-              aria-label={s.kind === 'article' ? s.article.title : 'Join Ignite'}
+              aria-label={s.kind === 'article' ? plainTitle(s.article.title) : 'Join Ignite'}
               onClick={() => setIndex(i)}
             />
           ))}

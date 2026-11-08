@@ -8,6 +8,7 @@ import ShareBar from '../components/ShareBar'
 import { recordView } from '../lib/analytics'
 import NotFound from './NotFound'
 import { creditList } from '../lib/credits'
+import { TitleText, plainTitle } from '../lib/title'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -59,13 +60,13 @@ export default function Article() {
   return (
     <article style={accentVars(sec)}>
       <div className="article-cover">
-        <img src={article.cover} alt={article.title} />
+        <img src={article.cover} alt={plainTitle(article.title)} />
         {article.coverCredit && <span className="credit">{creditLine(article.coverCredit)}</span>}
       </div>
 
       <header className="article-head">
         <Link to={`/section/${sec.slug}`} className="chip">{sec.name}</Link>
-        <h1 className="display">{article.title}</h1>
+        <h1 className="display"><TitleText title={article.title} /></h1>
         {article.dek && <p className="dek">{article.dek}</p>}
         <div className="article-byline">
           <span>By {article.author}</span>
@@ -80,7 +81,7 @@ export default function Article() {
             </>
           )}
         </div>
-        <ShareBar title={article.title} />
+        <ShareBar title={plainTitle(article.title)} />
       </header>
 
       <div

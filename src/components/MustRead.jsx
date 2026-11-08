@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { sectionOf } from './ArticleCard'
+import { TitleText, plainTitle } from '../lib/title'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -31,11 +32,11 @@ export default function MustRead({ articles, limit = MUST_READ_MAX }) {
           return (
             <Link key={a.id} to={`/article/${a.slug}`} className="must-read-item">
               <div className="must-read-img">
-                <img src={a.cover} alt={a.title} loading="lazy" />
+                <img src={a.cover} alt={plainTitle(a.title)} loading="lazy" />
               </div>
               <div className="must-read-body">
                 <span className="must-read-kicker">{sec.name}</span>
-                <h3>{a.title}</h3>
+                <h3><TitleText title={a.title} /></h3>
                 <p>By {a.author} · {fmtDate(a.date)}</p>
               </div>
             </Link>

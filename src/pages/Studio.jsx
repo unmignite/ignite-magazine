@@ -6,6 +6,7 @@ import { SECTIONS, accentVars } from '../data/sections'
 import { useArticleSearch } from '../components/ArticleSearch'
 import { MUST_READ_MAX } from '../components/MustRead'
 import { mustReadReady } from '../lib/supabase'
+import { TitleText, plainTitle } from '../lib/title'
 
 const fmtDate = (d) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -47,7 +48,7 @@ export default function Studio() {
   )
 
   const handleDelete = async (a) => {
-    if (!window.confirm(`Delete “${a.title}”? This cannot be undone.`)) return
+    if (!window.confirm(`Delete “${plainTitle(a.title)}”? This cannot be undone.`)) return
     const res = await deleteArticle(a.id)
     if (!res.ok) setNotice(res.error)
   }
@@ -193,7 +194,7 @@ export default function Studio() {
                   <img className="studio-thumb" src={a.cover} alt="" />
                 </td>
                 <td className="studio-title-cell">
-                  <Link to={`/article/${a.slug}`}>{a.title}</Link>
+                  <Link to={`/article/${a.slug}`}><TitleText title={a.title} /></Link>
                 </td>
                 <td className="hide-sm">
                   <span className="chip" style={accentVars(sec)}>{sec?.name}</span>

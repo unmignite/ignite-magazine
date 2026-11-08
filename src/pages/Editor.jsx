@@ -18,6 +18,7 @@ import { can } from '../lib/roles'
 import { SECTIONS } from '../data/sections'
 import { uploadImage } from '../lib/supabase'
 import { ROLE_CHOICES, creditsForEditing, creditList } from '../lib/credits'
+import { TitleText, plainTitle, toggleStrike } from '../lib/title'
 import NotFound from './NotFound'
 
 // Each credit row carries a key of its own. Indexes won't do: remove the middle
@@ -235,6 +236,7 @@ function EditorForm({ existing }) {
   const isNew = !existing
 
   const [title, setTitle] = useState(existing?.title || '')
+  const titleRef = useRef(null)
   const [dek, setDek] = useState(existing?.dek || '')
   const [section, setSection] = useState(existing?.section || 'music')
   const [author, setAuthor] = useState(existing?.author || user.name)
@@ -307,6 +309,20 @@ function EditorForm({ existing }) {
   const removeCredit = (i) =>
     setCredits((rows) => (rows.length > 1 ? rows.filter((_, n) => n !== i) : [newCreditRow()]))
 
+  // Strikes the selected words through, or restores them if they already are.
+  // The selection is put back afterwards so a second press undoes the first.
+  const strikeTitle = () => {
+    const el = titleRef.current
+    if (!el) return
+    const next = toggleStrike(title, el.selectionStart, el.selectionEnd)
+    if (!next) return el.focus()
+    setTitle(next.title)
+    requestAnimationFrame(() => {
+      el.focus()
+      el.setSelectionRange(next.start, next.end)
+    })
+  }
+
   const save = async () => {
     if (!title.trim()) return alert('Give the article a title first.')
     if (!editor) return
@@ -314,7 +330,7 @@ function EditorForm({ existing }) {
 
     let slug = existing?.slug
     if (!slug) {
-      const base = slugify(title) || 'untitled'
+      const base = slugify(plainTitle(title)) || 'untitled'
       slug = base
       let i = 2
       while (articles.some((a) => a.slug === slug)) slug = `${base}-${i++}`
@@ -358,7 +374,7 @@ function EditorForm({ existing }) {
 
   const remove = async () => {
     if (!existing) return
-    if (window.confirm(`Delete “${existing.title}”? This cannot be undone.`)) {
+    if (window.confirm(`Delete “${plainTitle(existing.title)}”? This cannot be undone.`)) {
       const res = await deleteArticle(existing.id)
       if (!res.ok) return setSaveError(res.error)
       navigate('/studio')
@@ -384,12 +400,30 @@ function EditorForm({ existing }) {
       <div className="editor-grid">
         <div>
           <textarea
+            ref={titleRef}
             className="title-input"
             rows={2}
             placeholder="ARTICLE TITLE"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => {
+              // The same shortcut as strikethrough in the body below.
+              if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'x') {
+                e.preventDefault()
+                strikeTitle()
+              }
+            }}
           />
+          <div className="title-tools">
+            <button type="button" className="tt-btn" onClick={strikeTitle} title="Strike through the selected words (⌘⇧X)">
+              <s>S</s>
+            </button>
+            {title.includes('~~') ? (
+              <span className="title-preview">Shows as: <TitleText title={title} /></span>
+            ) : (
+              <span className="title-hint">Select words in the title to strike them through.</span>
+            )}
+          </div>
           <textarea
             className="dek-input"
             rows={2}
